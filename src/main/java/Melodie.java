@@ -20,13 +20,25 @@ public class Melodie {
 
         while (true) {
             String input = scanner.nextLine();
+            String[] parts = input.split(" ", 2);
             System.out.println("    ____________________________________________________________");
 
             if (input.equals("bye")) {
                 break;
             }
 
-            if (input.equals("list")) {
+            if (parts[0].equals("mark")) {
+                int taskNum = Integer.parseInt(parts[1]) - 1;
+                tasks[taskNum].mark();
+                System.out.println("    Good job! Task has been marked as done~");
+                System.out.println("    " + tasks[taskNum].toString());
+            } else if (parts[0].equals("unmark")) {
+                int taskNum = Integer.parseInt(parts[1]) - 1;
+                tasks[taskNum].unmark();
+                System.out.println("    Task has been marked as incomplete, good luck ♫");
+                System.out.println("    " + tasks[taskNum].toString());
+            } else if (input.equals("list")) {
+                System.out.println("    Here are the tasks in your list ♪");
                 for (int i = 0; i < taskCounter; i++) {
                     System.out.println("    " + (i + 1) + ". " + tasks[i].toString());
                 }
