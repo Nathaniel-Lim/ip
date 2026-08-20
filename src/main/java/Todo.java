@@ -1,6 +1,5 @@
 public class Todo extends Task {
     private final String identifier = "[T]";
-    private String details = null;
     // description in the super class
 
     public Todo(String description) {
@@ -9,6 +8,6 @@ public class Todo extends Task {
 
     @Override
     public String toString() {
-        return this.identifier + " " + super.toString();
+        return this.identifier + super.toString();
     }
 }

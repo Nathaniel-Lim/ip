@@ -69,8 +69,8 @@ public class Melodie {
                         break;
                     }
 
-                    String description = deadlineParts[0];
-                    String dueDate = deadlineParts[1];
+                    String description = deadlineParts[0].trim();
+                    String dueDate = deadlineParts[1].trim();
                     Task deadline = new Deadline(description, dueDate);
                     tasks[taskCounter++] = deadline;
                     printTaskDetails(deadline, taskCounter);
@@ -80,20 +80,20 @@ public class Melodie {
                     String[] fromParts = taskDescription.split("/from ", 2);
                     if (fromParts.length != 2) {
                         System.out.println("    Please enter a valid task description :(");
-                        System.out.println("    Format: deadline <task description> <due date>");
+                        System.out.println("    Format: event <description> /from <start> /to <end>");
                         break;
                     }
 
                     String[] toParts = fromParts[1].split("/to ", 2);
                     if (toParts.length != 2) {
                         System.out.println("    Please enter a valid task description :(");
-                        System.out.println("    Format: deadline <task description> <due date>");
+                        System.out.println("    Format: event <description> /from <start> /to <end>");
                         break;
                     }
 
-                    String descriptions = fromParts[0]; // there has to be a more scalable way
-                    String start = toParts[0];
-                    String end = toParts[1];
+                    String descriptions = fromParts[0].trim(); // there has to be a more scalable way
+                    String start = toParts[0].trim();
+                    String end = toParts[1].trim();
                     Task event = new Event(descriptions, start, end);
                     tasks[taskCounter++] = event;
                     printTaskDetails(event, taskCounter);
@@ -134,7 +134,7 @@ public class Melodie {
     }
 
     public static void printTaskDetails(Task task, int taskCounter) {
-        System.out.println("    Task as been added successfully ♪");
+        System.out.println("    Task has been added successfully ♪");
         System.out.println("        " + task.toString());
         System.out.println("    There are " + taskCounter + " task(s) awaiting your attention~");
     }
