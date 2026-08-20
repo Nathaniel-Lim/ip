@@ -29,14 +29,22 @@ public class Melodie {
 
             if (parts[0].equals("mark")) {
                 int taskNum = Integer.parseInt(parts[1]) - 1;
-                tasks[taskNum].mark();
-                System.out.println("    Good job! Task has been marked as done~");
-                System.out.println("    " + tasks[taskNum].toString());
+                if (taskNum < 0 || taskNum >= taskCounter) {
+                    System.out.println("    Please enter a valid task number :(");
+                } else {
+                    tasks[taskNum].mark();
+                    System.out.println("    Good job! Task has been marked as done~");
+                    System.out.println("    " + tasks[taskNum].toString());
+                }
             } else if (parts[0].equals("unmark")) {
                 int taskNum = Integer.parseInt(parts[1]) - 1;
-                tasks[taskNum].unmark();
-                System.out.println("    Task has been marked as incomplete, good luck ♫");
-                System.out.println("    " + tasks[taskNum].toString());
+                if (taskNum < 0 || taskNum >= taskCounter) {
+                    System.out.println("    Please enter a valid task number :(");
+                } else {
+                    tasks[taskNum].unmark();
+                    System.out.println("    Task has been marked as incomplete, good luck ♫");
+                    System.out.println("    " + tasks[taskNum].toString());
+                }
             } else if (input.equals("list")) {
                 System.out.println("    Here are the tasks in your list ♪");
                 for (int i = 0; i < taskCounter; i++) {
