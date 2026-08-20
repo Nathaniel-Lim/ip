@@ -18,3 +18,6 @@ _temp/
 
 /text-ui-test/ACTUAL.TXT
 text-ui-test/EXPECTED-UNIX.TXT
+
+# ignore all class files anywhere in the repo
+*.class
