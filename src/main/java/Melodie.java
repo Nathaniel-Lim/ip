@@ -21,33 +21,32 @@ public class Melodie {
 //        int taskCounter = 0;
 
         while (true) {
+            try {
             String input = scanner.nextLine().trim();
             String[] parts = input.split(" ", 2);
-            String command = parts[0];
+            Command command = Command.from(parts[0]);
             String taskDescription = parts.length > 1 ? parts[1] : "";
 
             System.out.println("    ____________________________________________________________");
 
-            if (input.equals("bye")) {
+            if (command == Command.BYE) {
                 break;
             }
-
-            try {
                 switch (command) {
-                    case "mark":
-                    case "unmark":
-                    case "delete":
+                    case MARK:
+                    case UNMARK:
+                    case DELETE:
                         int taskNum = Integer.parseInt(taskDescription) - 1;
                         if (taskNum < 0 || taskNum >= tasks.size()) {
                             throw new MelodieException("Please enter a valid task number :(");
                         }
 
-                        if (command.equals("mark")) {
+                        if (command == Command.MARK) {
 //                            tasks[taskNum].mark();
                             tasks.get(taskNum).mark();
                             System.out.println("    Good job! Task has been marked as done~");
                             System.out.println("    " + tasks.get(taskNum).toString());
-                        } else if (command.equals("unmark")){
+                        } else if (command == Command.UNMARK){
 //                            tasks[taskNum].unmark();
                             tasks.get(taskNum).unmark();
                             System.out.println("    Task has been marked as incomplete, good luck ♫");
@@ -59,7 +58,7 @@ public class Melodie {
 
                         break;
 
-                    case "todo":
+                    case TODO:
                         if (taskDescription.isBlank()) {
                             throw new MelodieException("You can't leave the description of a todo empty :(");
                         }
@@ -68,7 +67,7 @@ public class Melodie {
                         printTaskDetails(todo, tasks.size());
                         break;
 
-                    case "deadline":
+                    case DEADLINE:
                         String[] deadlineParts = taskDescription.split("/by ", 2);
                         if (deadlineParts.length != 2
                                 || deadlineParts[0].isBlank()
@@ -84,7 +83,7 @@ public class Melodie {
                         printTaskDetails(deadline, tasks.size());
                         break;
 
-                    case "event":
+                    case EVENT:
                         String[] fromParts = taskDescription.split("/from ", 2);
                         if (fromParts.length != 2
                                 || fromParts[0].isBlank()) {
@@ -108,7 +107,7 @@ public class Melodie {
                         printTaskDetails(event, tasks.size());
                         break;
 
-                    case "list":
+                    case LIST:
                         if (tasks.isEmpty()) {
                             System.out.println("    Your list is currently empty; let's get started shall we? ♪");
                             break;
