@@ -21,40 +21,95 @@ public class Melodie {
         while (true) {
             String input = scanner.nextLine();
             String[] parts = input.split(" ", 2);
+            String command = parts[0];
+            String taskDescription = parts.length > 1 ? parts[1] : "";
+
             System.out.println("    ____________________________________________________________");
 
             if (input.equals("bye")) {
                 break;
             }
 
-            if (parts[0].equals("mark")) {
-                int taskNum = Integer.parseInt(parts[1]) - 1;
-                if (taskNum < 0 || taskNum >= taskCounter) {
-                    System.out.println("    Please enter a valid task number :(");
-                } else {
-                    tasks[taskNum].mark();
-                    System.out.println("    Good job! Task has been marked as done~");
-                    System.out.println("    " + tasks[taskNum].toString());
-                }
-            } else if (parts[0].equals("unmark")) {
-                int taskNum = Integer.parseInt(parts[1]) - 1;
-                if (taskNum < 0 || taskNum >= taskCounter) {
-                    System.out.println("    Please enter a valid task number :(");
-                } else {
-                    tasks[taskNum].unmark();
-                    System.out.println("    Task has been marked as incomplete, good luck ♫");
-                    System.out.println("    " + tasks[taskNum].toString());
-                }
-            } else if (input.equals("list")) {
-                System.out.println("    Here are the tasks in your list ♪");
-                for (int i = 0; i < taskCounter; i++) {
-                    System.out.println("    " + (i + 1) + ". " + tasks[i].toString());
-                }
-            } else {
-                tasks[taskCounter++] = new Task(input);
-                System.out.println("    added: " + input);
-            }
+            switch(command) {
+                case "mark":
+                case "unmark":
+                    try {
+                        int taskNum = Integer.parseInt(taskDescription) - 1;
+                        if (taskNum < 0 || taskNum >= taskCounter) {
+                            System.out.println("    Please enter a valid task number :(");
+                            break;
+                        }
 
+                        if (command.equals("mark")) {
+                            tasks[taskNum].mark();
+                            System.out.println("    Good job! Task has been marked as done~");
+                        } else {
+                            tasks[taskNum].unmark();
+                            System.out.println("    Task has been marked as incomplete, good luck ♫");
+                        }
+
+                        System.out.println("    " + tasks[taskNum].toString());
+                        break;
+                    } catch (NumberFormatException e) {
+                        System.out.println("    Please enter a valid task number :(");
+                        break;
+                    }
+
+                case "todo":
+                    Task todo = new Todo(taskDescription);
+                    tasks[taskCounter++] = todo;
+                    printTaskDetails(todo, taskCounter);
+                    break;
+
+                case "deadline":
+                    String[] deadlineParts = taskDescription.split("/by ", 2);
+                    if (deadlineParts.length != 2) {
+                        System.out.println("    Please enter a valid task description :(");
+                        System.out.println("    Format: deadline <task description> <due date>");
+                        break;
+                    }
+
+                    String description = deadlineParts[0];
+                    String dueDate = deadlineParts[1];
+                    Task deadline = new Deadline(description, dueDate);
+                    tasks[taskCounter++] = deadline;
+                    printTaskDetails(deadline, taskCounter);
+                    break;
+
+                case "event":
+                    String[] fromParts = taskDescription.split("/from ", 2);
+                    if (fromParts.length != 2) {
+                        System.out.println("    Please enter a valid task description :(");
+                        System.out.println("    Format: deadline <task description> <due date>");
+                        break;
+                    }
+
+                    String[] toParts = fromParts[1].split("/to ", 2);
+                    if (toParts.length != 2) {
+                        System.out.println("    Please enter a valid task description :(");
+                        System.out.println("    Format: deadline <task description> <due date>");
+                        break;
+                    }
+
+                    String descriptions = fromParts[0]; // there has to be a more scalable way
+                    String start = toParts[0];
+                    String end = toParts[1];
+                    Task event = new Event(descriptions, start, end);
+                    tasks[taskCounter++] = event;
+                    printTaskDetails(event, taskCounter);
+                    break;
+
+                case "list":
+                    System.out.println("    Here are the tasks in your list ♪");
+                    for (int i = 0; i < taskCounter; i++) {
+                        System.out.println("    " + (i + 1) + ". " + tasks[i].toString());
+                    }
+                    break;
+
+                default:
+                    tasks[taskCounter++] = new Task(input);
+                    System.out.println("    added: " + input);
+            }
             System.out.println("    ____________________________________________________________");
         }
 
@@ -76,5 +131,11 @@ public class Melodie {
         return  "Farewell, come play with me again :D\n" +
                 "____________________________________________________________\n";
 //        return returnString;
+    }
+
+    public static void printTaskDetails(Task task, int taskCounter) {
+        System.out.println("    Task as been added successfully ♪");
+        System.out.println("        " + task.toString());
+        System.out.println("    There are " + taskCounter + " task(s) awaiting your attention~");
     }
 }
