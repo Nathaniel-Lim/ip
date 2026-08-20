@@ -1,3 +1,5 @@
+import java.util.Scanner;
+
 public class Melodie {
     public static String name = "Melodie";
     public static String banner =
@@ -10,9 +12,23 @@ public class Melodie {
             "          ♪  ♫  ♪";
 
     public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
         System.out.println(printIntro());
-        System.out.println(printFarewell());
 
+        while (true) {
+            String input = scanner.nextLine();
+            System.out.println("    ____________________________________________________________");
+
+            if (input.equals("bye")) {
+                break;
+            }
+
+            System.out.println("    " + input);
+            System.out.println("    ____________________________________________________________");
+        }
+
+        System.out.println(printFarewell());
+        scanner.close();
     }
 
     public static String printIntro() {
