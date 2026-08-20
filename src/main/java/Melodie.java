@@ -1,4 +1,5 @@
 import java.util.Scanner;
+import java.util.ArrayList;
 
 public class Melodie {
     public static String name = "Melodie";
@@ -16,8 +17,8 @@ public class Melodie {
         System.out.println(printIntro());
 
         // Use arrList as it handles deletions much better
-        Task[] tasks = new Task[100];
-        int taskCounter = 0;
+        ArrayList<Task> tasks = new ArrayList<>();
+//        int taskCounter = 0;
 
         while (true) {
             String input = scanner.nextLine().trim();
@@ -35,20 +36,27 @@ public class Melodie {
                 switch (command) {
                     case "mark":
                     case "unmark":
+                    case "delete":
                         int taskNum = Integer.parseInt(taskDescription) - 1;
-                        if (taskNum < 0 || taskNum >= taskCounter) {
+                        if (taskNum < 0 || taskNum >= tasks.size()) {
                             throw new MelodieException("Please enter a valid task number :(");
                         }
 
                         if (command.equals("mark")) {
-                            tasks[taskNum].mark();
+//                            tasks[taskNum].mark();
+                            tasks.get(taskNum).mark();
                             System.out.println("    Good job! Task has been marked as done~");
-                        } else {
-                            tasks[taskNum].unmark();
+                            System.out.println("    " + tasks.get(taskNum).toString());
+                        } else if (command.equals("unmark")){
+//                            tasks[taskNum].unmark();
+                            tasks.get(taskNum).unmark();
                             System.out.println("    Task has been marked as incomplete, good luck ♫");
+                            System.out.println("    " + tasks.get(taskNum).toString());
+                        } else {
+                            Task toDelete = tasks.remove(taskNum);
+                            printDeleteTaskDetails(toDelete, tasks.size());
                         }
 
-                        System.out.println("    " + tasks[taskNum].toString());
                         break;
 
                     case "todo":
@@ -56,8 +64,8 @@ public class Melodie {
                             throw new MelodieException("You can't leave the description of a todo empty :(");
                         }
                         Task todo = new Todo(taskDescription);
-                        tasks[taskCounter++] = todo;
-                        printTaskDetails(todo, taskCounter);
+                        tasks.add(todo);
+                        printTaskDetails(todo, tasks.size());
                         break;
 
                     case "deadline":
@@ -72,8 +80,8 @@ public class Melodie {
                         String description = deadlineParts[0].trim();
                         String dueDate = deadlineParts[1].trim();
                         Task deadline = new Deadline(description, dueDate);
-                        tasks[taskCounter++] = deadline;
-                        printTaskDetails(deadline, taskCounter);
+                        tasks.add(deadline);
+                        printTaskDetails(deadline, tasks.size());
                         break;
 
                     case "event":
@@ -96,18 +104,18 @@ public class Melodie {
                         String start = toParts[0].trim();
                         String end = toParts[1].trim();
                         Task event = new Event(descriptions, start, end);
-                        tasks[taskCounter++] = event;
-                        printTaskDetails(event, taskCounter);
+                        tasks.add(event);
+                        printTaskDetails(event, tasks.size());
                         break;
 
                     case "list":
-                        if (taskCounter == 0) {
+                        if (tasks.isEmpty()) {
                             System.out.println("    Your list is currently empty; let's get started shall we? ♪");
                             break;
                         }
                         System.out.println("    Here are the tasks in your list ♪");
-                        for (int i = 0; i < taskCounter; i++) {
-                            System.out.println("    " + (i + 1) + ". " + tasks[i].toString());
+                        for (int i = 0; i < tasks.size(); i++) {
+                            System.out.println("    " + (i + 1) + ". " + tasks.get(i).toString());
                         }
                         break;
 
@@ -129,23 +137,26 @@ public class Melodie {
     }
 
     public static String printIntro() {
-//        String returnString =
         return "____________________________________________________________\n" +
                 banner + "\n" +
                 "Hello ♪ I'm " + name + "~\n" +
                 "What master piece shall we play?\n" +
                 "____________________________________________________________\n";
-//        return returnString;
     }
 
     public static String printFarewell() {
         return  "Farewell, come play with me again :D\n" +
                 "____________________________________________________________\n";
-//        return returnString;
     }
 
     public static void printTaskDetails(Task task, int taskCounter) {
         System.out.println("    Task has been added successfully ♪");
+        System.out.println("        " + task.toString());
+        System.out.println("    There are " + taskCounter + " task(s) awaiting your attention~");
+    }
+
+    public static void printDeleteTaskDetails(Task task, int taskCounter) {
+        System.out.println("    Task has been removed ♪ goodbye task~");
         System.out.println("        " + task.toString());
         System.out.println("    There are " + taskCounter + " task(s) awaiting your attention~");
     }
