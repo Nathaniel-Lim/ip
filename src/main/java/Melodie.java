@@ -1,5 +1,6 @@
 import java.util.Scanner;
 import java.util.ArrayList;
+import java.io.IOException;
 
 public class Melodie {
     public static String name = "Melodie";
@@ -17,8 +18,15 @@ public class Melodie {
         System.out.println(printIntro());
 
         // Use arrList as it handles deletions much better
-        ArrayList<Task> tasks = new ArrayList<>();
-//        int taskCounter = 0;
+        Storage storage = new Storage();
+        ArrayList<Task> tasks;
+
+        try {
+            tasks = storage.read();
+        } catch (IOException e) {
+            System.out.println("    Sorry~ I couldn't load your saved tasks :(");
+            tasks = new ArrayList<>();
+        }
 
         while (true) {
             try {
@@ -29,7 +37,7 @@ public class Melodie {
 
             System.out.println("    ____________________________________________________________");
 
-            if (command == Command.BYE) {
+            if (command == Command.BYE) { // does not change the list
                 break;
             }
                 switch (command) {
@@ -44,15 +52,18 @@ public class Melodie {
                         if (command == Command.MARK) {
 //                            tasks[taskNum].mark();
                             tasks.get(taskNum).mark();
+                            storage.write(tasks);
                             System.out.println("    Good job! Task has been marked as done~");
                             System.out.println("    " + tasks.get(taskNum).toString());
                         } else if (command == Command.UNMARK){
 //                            tasks[taskNum].unmark();
                             tasks.get(taskNum).unmark();
+                            storage.write(tasks);
                             System.out.println("    Task has been marked as incomplete, good luck ♫");
                             System.out.println("    " + tasks.get(taskNum).toString());
                         } else {
                             Task toDelete = tasks.remove(taskNum);
+                            storage.write(tasks);
                             printDeleteTaskDetails(toDelete, tasks.size());
                         }
 
@@ -64,6 +75,7 @@ public class Melodie {
                         }
                         Task todo = new Todo(taskDescription);
                         tasks.add(todo);
+                        storage.write(tasks);
                         printTaskDetails(todo, tasks.size());
                         break;
 
@@ -80,6 +92,7 @@ public class Melodie {
                         String dueDate = deadlineParts[1].trim();
                         Task deadline = new Deadline(description, dueDate);
                         tasks.add(deadline);
+                        storage.write(tasks);
                         printTaskDetails(deadline, tasks.size());
                         break;
 
@@ -104,10 +117,11 @@ public class Melodie {
                         String end = toParts[1].trim();
                         Task event = new Event(descriptions, start, end);
                         tasks.add(event);
+                        storage.write(tasks);
                         printTaskDetails(event, tasks.size());
                         break;
 
-                    case LIST:
+                    case LIST: // does not change the list
                         if (tasks.isEmpty()) {
                             System.out.println("    Your list is currently empty; let's get started shall we? ♪");
                             break;
@@ -127,6 +141,8 @@ public class Melodie {
                 System.out.println("    " + e.getMessage());
             } catch (NumberFormatException e) {
                 System.out.println("    Please enter a valid task number :(");
+            } catch (IOException e) {
+                System.out.println("    Sorry! I couldn't save your tasks :(");
             }
             System.out.println("    ____________________________________________________________");
         }
