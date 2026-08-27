@@ -10,7 +10,7 @@ import java.util.Scanner;
  *  E | 0 | project meeting | Mon 2pm | 4pm
  */
 public class Storage { // helps read and write data to Melodie.txt
-    private final Path filePath = Path.of("data", "melodie.txt");
+    private final Path filePath = Path.of("data", "Melodie.txt");
 
     public ArrayList<Task> read() throws IOException {
         if (!Files.exists(filePath)) {
