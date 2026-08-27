@@ -1,14 +1,14 @@
 public class Task {
     private final String description;
-    private boolean completed;
+    private boolean isCompleted;
 
     public Task(String description) {
         this.description = description;
-        this.completed = false;
+        this.isCompleted = false;
     }
 
     public void mark() {
-        this.completed = true;
+        this.isCompleted = true;
     }
 
     public void unmark() {
@@ -18,7 +18,7 @@ public class Task {
     @Override
     public String toString() {
         String mark = " ";
-        if (this.completed == true) {
+        if (this.isCompleted) {
             mark = "X";
         }
         return "[" + mark + "] " + description;
