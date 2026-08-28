@@ -19,7 +19,15 @@ import melodie.task.Todo;
  *  E | 0 | project meeting | Mon 2pm | 4pm
  */
 public class Storage { // helps read and write data to Melodie.txt
-    private final Path filePath = Path.of("data", "Melodie.txt");
+    private final Path filePath;
+
+    public Storage() {
+        this(Path.of("data", "Melodie.txt"));
+    }
+
+    Storage(Path filePath) {
+        this.filePath = filePath;
+    }
 
     public ArrayList<Task> read() throws IOException {
         if (!Files.exists(filePath)) {
