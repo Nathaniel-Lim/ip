@@ -20,6 +20,9 @@ public class Melodie {
     private final Parser parser;
     private TaskList tasks;
 
+    /**
+     * Creates a Melodie chatbot with its user interface, storage, parser, and task list.
+     */
     public Melodie() {
         this.ui = new Ui();
         this.storage = new Storage();
@@ -27,6 +30,9 @@ public class Melodie {
         this.tasks = new TaskList();
     }
 
+    /**
+     * Runs the chatbot and processes commands until the user exits.
+     */
     public void run() {
         this.ui.showIntro();
         this.loadTasks();
@@ -53,6 +59,10 @@ public class Melodie {
         this.ui.close();
     }
 
+    /**
+     * Loads saved tasks from storage into the task list.
+     * If loading fails, an empty task list is used instead.
+     */
     private void loadTasks() {
         try {
             this.tasks = new TaskList(this.storage.read());
@@ -62,6 +72,13 @@ public class Melodie {
         }
     }
 
+    /**
+     * Executes a parsed command and updates storage when the task list changes.
+     *
+     * @param parsedCommand Command and arguments to execute.
+     * @throws MelodieException If the command or its arguments are invalid.
+     * @throws IOException If a change to the task list cannot be saved.
+     */
     private void executeCommand(ParsedCommand parsedCommand) throws MelodieException, IOException {
         switch (parsedCommand.getCommand()) {
             case MARK:
@@ -105,6 +122,11 @@ public class Melodie {
         }
     }
 
+    /**
+     * Starts the Melodie chatbot.
+     *
+     * @param args Command-line arguments; not used.
+     */
     public static void main(String[] args) {
         new Melodie().run();
     }
