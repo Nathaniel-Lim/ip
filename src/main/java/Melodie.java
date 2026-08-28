@@ -1,8 +1,15 @@
 import java.util.Scanner;
 import java.util.ArrayList;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.time.format.ResolverStyle;
 
 public class Melodie {
+    private static final DateTimeFormatter INPUT_DATE_TIME_FORMATTER =
+            DateTimeFormatter.ofPattern("d/M/uuuu HHmm")
+                    .withResolverStyle(ResolverStyle.STRICT);
     public static String name = "Melodie";
     public static String banner =
             " __  __      _           _ _\n" +
@@ -23,7 +30,7 @@ public class Melodie {
 
         try {
             tasks = storage.read();
-        } catch (IOException e) {
+        } catch (IOException | DateTimeParseException e) {
             System.out.println("    Sorry~ I couldn't load your saved tasks :(");
             tasks = new ArrayList<>();
         }
@@ -89,7 +96,9 @@ public class Melodie {
                         }
 
                         String description = deadlineParts[0].trim();
-                        String dueDate = deadlineParts[1].trim();
+                        String dueDateString = deadlineParts[1].trim();
+                        LocalDateTime dueDate = LocalDateTime.parse(
+                                dueDateString, INPUT_DATE_TIME_FORMATTER);
                         Task deadline = new Deadline(description, dueDate);
                         tasks.add(deadline);
                         storage.write(tasks);
@@ -113,8 +122,15 @@ public class Melodie {
                         }
 
                         String descriptions = fromParts[0].trim(); // there has to be a more scalable way
-                        String start = toParts[0].trim();
-                        String end = toParts[1].trim();
+                        String startString = toParts[0].trim();
+                        String endString = toParts[1].trim();
+                        LocalDateTime start = LocalDateTime.parse(
+                                startString, INPUT_DATE_TIME_FORMATTER);
+                        LocalDateTime end = LocalDateTime.parse(
+                                endString, INPUT_DATE_TIME_FORMATTER);
+                        if (end.isBefore(start)) {
+                            throw new MelodieException("The event cannot end before it starts :(");
+                        }
                         Task event = new Event(descriptions, start, end);
                         tasks.add(event);
                         storage.write(tasks);
@@ -141,6 +157,9 @@ public class Melodie {
                 System.out.println("    " + e.getMessage());
             } catch (NumberFormatException e) {
                 System.out.println("    Please enter a valid task number :(");
+            } catch (DateTimeParseException e) {
+                System.out.println("    Please enter the date and time in d/M/yyyy HHmm format :(\n"
+                                   + "    Example: 2/12/2019 1800");
             } catch (IOException e) {
                 System.out.println("    Sorry! I couldn't save your tasks :(");
             }

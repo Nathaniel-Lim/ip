@@ -1,2 +1,3 @@
 T | 1 | Yunara jungle
 T | 0 | lulu jungle
+D | 0 | lose 500 games | Monday
