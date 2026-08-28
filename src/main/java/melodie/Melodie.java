@@ -42,7 +42,7 @@ public class Melodie {
                 ParsedCommand parsedCommand = this.parser.parse(this.ui.readCommand());
                 this.ui.showLine();
 
-                if (parsedCommand.getCommand() == Command.BYE) { // does not change the list
+                if (parsedCommand.getCommand() == Command.BYE) {
                     break;
                 }
 
@@ -81,9 +81,7 @@ public class Melodie {
      */
     private void executeCommand(ParsedCommand parsedCommand) throws MelodieException, IOException {
         switch (parsedCommand.getCommand()) {
-            case MARK:
-            case UNMARK:
-            case DELETE:
+            case MARK, UNMARK, DELETE:
                 int taskIndex = this.parser.parseTaskIndex(parsedCommand.getArguments());
                 if (!this.tasks.isValidIndex(taskIndex)) {
                     throw new MelodieException("Please enter a valid task number :(");
@@ -104,16 +102,14 @@ public class Melodie {
                 }
                 break;
 
-            case TODO:
-            case DEADLINE:
-            case EVENT:
+            case TODO, DEADLINE, EVENT:
                 Task task = this.parser.parseTask(parsedCommand);
                 this.tasks.add(task);
                 this.storage.write(this.tasks);
                 this.ui.showTaskAdded(task, this.tasks.size());
                 break;
 
-            case LIST: // does not change the list
+            case LIST:
                 this.ui.showTaskList(this.tasks);
                 break;
 

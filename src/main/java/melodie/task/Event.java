@@ -10,8 +10,8 @@ import java.util.Locale;
 public class Event extends Task {
     private static final DateTimeFormatter DISPLAY_DATE_TIME_FORMATTER =
             DateTimeFormatter.ofPattern("MMM dd uuuu, h:mm a", Locale.ENGLISH);
-    private final String identifier = "[E]";
-    private final LocalDateTime start; // 何時から、何時までですか
+    private static final String IDENTIFIER = "[E]";
+    private final LocalDateTime start; // Event start date and time.
     private final LocalDateTime end;
 
     /**
@@ -47,7 +47,7 @@ public class Event extends Task {
 
     @Override
     public String toString() {
-        return this.identifier + super.toString()
+        return IDENTIFIER + super.toString()
                 + " (from: " + this.start.format(DISPLAY_DATE_TIME_FORMATTER)
                 + " to: " + this.end.format(DISPLAY_DATE_TIME_FORMATTER) + ")";
     }

@@ -4,8 +4,8 @@ package melodie.task;
  * Represents a task without an associated date or time.
  */
 public class Todo extends Task {
-    private final String identifier = "[T]";
-    // description in the super class
+    private static final String IDENTIFIER = "[T]";
+    // The description is stored in the superclass.
 
     /**
      * Creates a todo task with the specified description.
@@ -33,6 +33,6 @@ public class Todo extends Task {
      */
     @Override
     public String toString() {
-        return this.identifier + super.toString();
+        return IDENTIFIER + super.toString();
     }
 }

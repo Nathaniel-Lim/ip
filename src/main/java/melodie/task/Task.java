@@ -54,7 +54,7 @@ public class Task {
      * @return Storage-file representation of this task.
      */
     public String toStorageString() {
-        return getStatusCode() + " | " + this.description;
+        return this.getStatusCode() + " | " + this.description;
     }
 
     @Override
@@ -63,6 +63,6 @@ public class Task {
         if (this.isCompleted) {
             mark = "X";
         }
-        return "[" + mark + "] " + description;
+        return "[" + mark + "] " + this.description;
     }
 }

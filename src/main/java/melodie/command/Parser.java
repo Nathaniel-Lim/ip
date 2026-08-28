@@ -138,7 +138,7 @@ public class Parser {
                     + "    Example: event project meeting /from 2/12/2019 1400 /to 2/12/2019 1600");
         }
 
-        String description = fromParts[0].trim(); // there has to be a more scalable way
+        String description = fromParts[0].trim();
         String startString = toParts[0].trim();
         String endString = toParts[1].trim();
         LocalDateTime start = LocalDateTime.parse(

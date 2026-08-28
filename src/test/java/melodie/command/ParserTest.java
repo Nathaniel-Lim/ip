@@ -1,17 +1,17 @@
 package melodie.command;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import org.junit.jupiter.api.Test;
+
 import melodie.MelodieException;
 import melodie.task.Deadline;
 import melodie.task.Event;
 import melodie.task.Task;
 import melodie.task.Todo;
-
-import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ParserTest {
     @Test
@@ -54,8 +54,8 @@ public class ParserTest {
         assertInstanceOf(Event.class, actualTask);
         assertEquals("pull C6R1 Nicole", actualTask.getDescription());
         assertFalse(actualTask.isCompleted());
-        assertEquals("[E][ ] pull C6R1 Nicole (from: Dec 16 2026, 11:00 AM " +
-                "to: Jan 06 2027, 11:59 PM)", actualTask.toString());
+        assertEquals("[E][ ] pull C6R1 Nicole (from: Dec 16 2026, 11:00 AM "
+                + "to: Jan 06 2027, 11:59 PM)", actualTask.toString());
     }
 
     @Test
@@ -77,7 +77,7 @@ public class ParserTest {
         MelodieException exception = assertThrows(
                 MelodieException.class,
                 () -> parser.parseTask(parsedCommand));
-        // nullary function is used to ensure parseTask doesn't throw before assertThrows does
+        // The lambda defers execution so assertThrows can capture the exception.
         assertEquals("Please enter the date and time in d/M/yyyy HHmm format :(\n"
                 + "    Example: 2/12/2019 1800", exception.getMessage());
     }

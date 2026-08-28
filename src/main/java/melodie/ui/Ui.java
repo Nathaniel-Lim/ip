@@ -11,13 +11,13 @@ import melodie.task.TaskList;
 public class Ui {
     private static final String NAME = "Melodie";
     private static final String BANNER =
-            " __  __      _           _ _\n" +
-            "|  \\/  | ___| | ___   __| (_) ___\n" +
-            "| |\\/| |/ _ \\ |/ _ \\ / _` | |/ _ \\\n" +
-            "| |  | |  __/ | (_) | (_| | |  __/\n" +
-            "|_|  |_|\\___|_|\\___/ \\__,_|_|\\___|\n" +
-            "\n" +
-            "          ♪  ♫  ♪";
+            " __  __      _           _ _\n"
+            + "|  \\/  | ___| | ___   __| (_) ___\n"
+            + "| |\\/| |/ _ \\ |/ _ \\ / _` | |/ _ \\\n"
+            + "| |  | |  __/ | (_) | (_| | |  __/\n"
+            + "|_|  |_|\\___|_|\\___/ \\__,_|_|\\___|\n"
+            + "\n"
+            + "          ♪  ♫  ♪";
     private final Scanner scanner;
 
     /**
@@ -40,19 +40,19 @@ public class Ui {
      * Displays Melodie's banner and greeting.
      */
     public void showIntro() {
-        System.out.println("____________________________________________________________\n" +
-                BANNER + "\n" +
-                "Hello ♪ I'm " + NAME + "~\n" +
-                "What master piece shall we play?\n" +
-                "____________________________________________________________\n");
+        System.out.println("____________________________________________________________\n"
+                + BANNER + "\n"
+                + "Hello ♪ I'm " + NAME + "~\n"
+                + "What master piece shall we play?\n"
+                + "____________________________________________________________\n");
     }
 
     /**
      * Displays Melodie's farewell message.
      */
     public void showFarewell() {
-        System.out.println("Farewell, come play with me again :D\n" +
-                "____________________________________________________________\n");
+        System.out.println("Farewell, come play with me again :D\n"
+                + "____________________________________________________________\n");
     }
 
     /**

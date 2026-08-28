@@ -10,8 +10,8 @@ import java.util.Locale;
 public class Deadline extends Task {
     private static final DateTimeFormatter DISPLAY_DATE_TIME_FORMATTER =
             DateTimeFormatter.ofPattern("MMM dd uuuu, h:mm a", Locale.ENGLISH);
-    private final String identifier = "[D]";
-    private final LocalDateTime dueDate; // deadline
+    private static final String IDENTIFIER = "[D]";
+    private final LocalDateTime dueDate; // Deadline date and time.
 
     /**
      * Creates a deadline task with the specified description and due date.
@@ -42,7 +42,7 @@ public class Deadline extends Task {
 
     @Override
     public String toString() {
-        return this.identifier + super.toString()
+        return IDENTIFIER + super.toString()
                 + " (by: " + this.dueDate.format(DISPLAY_DATE_TIME_FORMATTER) + ")";
     }
 }
