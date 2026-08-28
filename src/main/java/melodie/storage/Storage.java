@@ -1,9 +1,17 @@
+package melodie.storage;
+
 import java.util.ArrayList;
 import java.nio.file.Path;
 import java.nio.file.Files;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Scanner;
+
+import melodie.task.Deadline;
+import melodie.task.Event;
+import melodie.task.Task;
+import melodie.task.TaskList;
+import melodie.task.Todo;
 
 /**
  *  T | 1 | read book

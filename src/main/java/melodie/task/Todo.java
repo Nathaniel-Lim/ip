@@ -1,3 +1,5 @@
+package melodie.task;
+
 public class Todo extends Task {
     private final String identifier = "[T]";
     // description in the super class

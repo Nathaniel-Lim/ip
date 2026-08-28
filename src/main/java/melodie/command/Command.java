@@ -1,3 +1,7 @@
+package melodie.command;
+
+import melodie.MelodieException;
+
 public enum Command {
     TODO,
     DEADLINE,

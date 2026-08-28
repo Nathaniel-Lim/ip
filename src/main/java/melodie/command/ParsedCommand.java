@@ -1,3 +1,5 @@
+package melodie.command;
+
 /**
  * Contains a parsed command and its remaining arguments.
  */

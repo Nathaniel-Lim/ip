@@ -1,4 +1,9 @@
+package melodie.ui;
+
 import java.util.Scanner;
+
+import melodie.task.Task;
+import melodie.task.TaskList;
 
 /**
  * Handles console input and output for Melodie.

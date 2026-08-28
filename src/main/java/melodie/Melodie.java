@@ -1,5 +1,15 @@
+package melodie;
+
 import java.io.IOException;
 import java.time.format.DateTimeParseException;
+
+import melodie.command.Command;
+import melodie.command.ParsedCommand;
+import melodie.command.Parser;
+import melodie.storage.Storage;
+import melodie.task.Task;
+import melodie.task.TaskList;
+import melodie.ui.Ui;
 
 /**
  * Coordinates the components of the Melodie chatbot.
