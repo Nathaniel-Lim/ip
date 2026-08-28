@@ -8,7 +8,7 @@ import java.util.List;
  * Manages the tasks held by Melodie.
  */
 public class TaskList {
-    // Use arrList as it handles deletions much better
+    // ArrayList supports the indexed operations used by task commands.
     private final ArrayList<Task> tasks;
 
     public TaskList() {
@@ -58,7 +58,7 @@ public class TaskList {
     /**
      * Returns a read-only view of the tasks for storage operations.
      *
-     * @return read-only task list
+     * @return Read-only task list.
      */
     public List<Task> getTasks() {
         return Collections.unmodifiableList(this.tasks);

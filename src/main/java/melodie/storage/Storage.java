@@ -1,10 +1,10 @@
 package melodie.storage;
 
-import java.util.ArrayList;
-import java.nio.file.Path;
-import java.nio.file.Files;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 import melodie.task.Deadline;
@@ -18,7 +18,7 @@ import melodie.task.Todo;
  *  D | 0 | return book | June 6th
  *  E | 0 | project meeting | Mon 2pm | 4pm
  */
-public class Storage { // helps read and write data to Melodie.txt
+public class Storage {
     private final Path filePath;
 
     public Storage() {
@@ -30,11 +30,11 @@ public class Storage { // helps read and write data to Melodie.txt
     }
 
     public ArrayList<Task> read() throws IOException {
-        if (!Files.exists(filePath)) {
+        if (!Files.exists(this.filePath)) {
             return new ArrayList<>();
         }
 
-        Scanner scanner = new Scanner(filePath);
+        Scanner scanner = new Scanner(this.filePath);
         ArrayList<Task> tasks = new ArrayList<>();
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
@@ -64,7 +64,7 @@ public class Storage { // helps read and write data to Melodie.txt
                     continue;
             }
 
-            if (parts[1].equals("1")) { // 1 for complete, 0 for incomplete
+            if (parts[1].equals("1")) { // 1 represents complete; 0 represents incomplete.
                 task.mark();
             }
             tasks.add(task);
@@ -74,7 +74,7 @@ public class Storage { // helps read and write data to Melodie.txt
     }
 
     public void write(TaskList tasks) throws IOException {
-        Files.createDirectories(filePath.getParent());
+        Files.createDirectories(this.filePath.getParent());
 
         ArrayList<String> lines = new ArrayList<>();
 
@@ -82,6 +82,6 @@ public class Storage { // helps read and write data to Melodie.txt
             lines.add(task.toStorageString());
         }
 
-        Files.write(filePath, lines);
+        Files.write(this.filePath, lines);
     }
 }

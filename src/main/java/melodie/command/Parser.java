@@ -29,9 +29,9 @@ public class Parser {
     /**
      * Converts the arguments of a task-creation command into the matching task type.
      *
-     * @param parsedCommand task-creation command and its arguments
-     * @return parsed task
-     * @throws MelodieException if the command arguments are invalid
+     * @param parsedCommand Task-creation command and its arguments.
+     * @return Parsed task.
+     * @throws MelodieException If the command arguments are invalid.
      */
     public Task parseTask(ParsedCommand parsedCommand) throws MelodieException {
         try {
@@ -103,7 +103,7 @@ public class Parser {
                     + "    Example: event project meeting /from 2/12/2019 1400 /to 2/12/2019 1600");
         }
 
-        String description = fromParts[0].trim(); // there has to be a more scalable way
+        String description = fromParts[0].trim();
         String startString = toParts[0].trim();
         String endString = toParts[1].trim();
         LocalDateTime start = LocalDateTime.parse(

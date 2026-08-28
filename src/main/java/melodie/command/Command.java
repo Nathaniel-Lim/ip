@@ -17,8 +17,7 @@ public enum Command {
             return Command.valueOf(input.toUpperCase());
         } catch (IllegalArgumentException e) {
             throw new MelodieException(
-                    "Sorry~ I don't recognise that command :("
-            );
+                    "Sorry~ I don't recognise that command :(");
         }
     }
 
