@@ -1,2 +1,2 @@
-T | 1 | Yunara jungle
-T | 0 | lulu jungle
+D | 1 | play 500 games | 2026-12-08T23:59
+E | 0 | Chasca's birthday | 2026-12-10T00:00 | 2026-12-10T23:59

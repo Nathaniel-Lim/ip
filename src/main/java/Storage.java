@@ -2,6 +2,7 @@ import java.util.ArrayList;
 import java.nio.file.Path;
 import java.nio.file.Files;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Scanner;
 
 /**
@@ -33,11 +34,14 @@ public class Storage { // helps read and write data to Melodie.txt
                     break;
 
                 case "D":
-                    task = new Deadline(parts[2], parts[3]);
+                    task = new Deadline(parts[2], LocalDateTime.parse(parts[3]));
                     break;
 
                 case "E":
-                    task = new Event(parts[2], parts[3], parts[4]);
+                    task = new Event(
+                            parts[2],
+                            LocalDateTime.parse(parts[3]),
+                            LocalDateTime.parse(parts[4]));
                     break;
 
                 default:
@@ -65,4 +69,3 @@ public class Storage { // helps read and write data to Melodie.txt
         Files.write(filePath, lines);
     }
 }
-

@@ -1,8 +1,15 @@
 import java.util.Scanner;
 import java.util.ArrayList;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.time.format.ResolverStyle;
 
 public class Melodie {
+    private static final DateTimeFormatter INPUT_DATE_TIME_FORMATTER =
+            DateTimeFormatter.ofPattern("d/M/uuuu HHmm")
+                    .withResolverStyle(ResolverStyle.STRICT);
     public static String name = "Melodie";
     public static String banner =
             " __  __      _           _ _\n" +
@@ -23,7 +30,7 @@ public class Melodie {
 
         try {
             tasks = storage.read();
-        } catch (IOException e) {
+        } catch (IOException | DateTimeParseException e) {
             System.out.println("    Sorry~ I couldn't load your saved tasks :(");
             tasks = new ArrayList<>();
         }
@@ -84,12 +91,15 @@ public class Melodie {
                         if (deadlineParts.length != 2
                                 || deadlineParts[0].isBlank()
                                 || deadlineParts[1].isBlank()) {
-                            throw new MelodieException("Please enter a valid task description and due date :(\n"
-                                                     + "Format: deadline <task description> /by <due date>");
+                            throw new MelodieException("Please enter a valid task description, due date, and time :(\n"
+                                                     + "    Format: deadline <task description> /by <d/M/yyyy HHmm>\n"
+                                                     + "    Example: deadline return book /by 2/12/2019 1800");
                         }
 
                         String description = deadlineParts[0].trim();
-                        String dueDate = deadlineParts[1].trim();
+                        String dueDateString = deadlineParts[1].trim();
+                        LocalDateTime dueDate = LocalDateTime.parse(
+                                dueDateString, INPUT_DATE_TIME_FORMATTER);
                         Task deadline = new Deadline(description, dueDate);
                         tasks.add(deadline);
                         storage.write(tasks);
@@ -100,21 +110,32 @@ public class Melodie {
                         String[] fromParts = taskDescription.split("/from ", 2);
                         if (fromParts.length != 2
                                 || fromParts[0].isBlank()) {
-                            throw new MelodieException("Please enter a valid task description, start, and end :(\n"
-                                                     + "Format: event <description> /from <start> /to <end>");
+                            throw new MelodieException(
+                                    "Please enter a valid task description, start date and time, and end date and time :(\n"
+                                    + "    Format: event <description> /from <d/M/yyyy HHmm> /to <d/M/yyyy HHmm>\n"
+                                    + "    Example: event project meeting /from 2/12/2019 1400 /to 2/12/2019 1600");
                         }
 
                         String[] toParts = fromParts[1].split("/to ", 2);
                         if (toParts.length != 2
                                 || toParts[0].isBlank()
                                 || toParts[1].isBlank()) {
-                            throw new MelodieException("Please enter a valid task description :(\n"
-                                                     + "Format: event <description> /from <start> /to <end>");
+                            throw new MelodieException(
+                                    "Please enter a valid task description, start date and time, and end date and time :(\n"
+                                    + "    Format: event <description> /from <d/M/yyyy HHmm> /to <d/M/yyyy HHmm>\n"
+                                    + "    Example: event project meeting /from 2/12/2019 1400 /to 2/12/2019 1600");
                         }
 
                         String descriptions = fromParts[0].trim(); // there has to be a more scalable way
-                        String start = toParts[0].trim();
-                        String end = toParts[1].trim();
+                        String startString = toParts[0].trim();
+                        String endString = toParts[1].trim();
+                        LocalDateTime start = LocalDateTime.parse(
+                                startString, INPUT_DATE_TIME_FORMATTER);
+                        LocalDateTime end = LocalDateTime.parse(
+                                endString, INPUT_DATE_TIME_FORMATTER);
+                        if (end.isBefore(start)) {
+                            throw new MelodieException("The event cannot end before it starts :(");
+                        }
                         Task event = new Event(descriptions, start, end);
                         tasks.add(event);
                         storage.write(tasks);
@@ -141,6 +162,9 @@ public class Melodie {
                 System.out.println("    " + e.getMessage());
             } catch (NumberFormatException e) {
                 System.out.println("    Please enter a valid task number :(");
+            } catch (DateTimeParseException e) {
+                System.out.println("    Please enter the date and time in d/M/yyyy HHmm format :(\n"
+                                   + "    Example: 2/12/2019 1800");
             } catch (IOException e) {
                 System.out.println("    Sorry! I couldn't save your tasks :(");
             }
