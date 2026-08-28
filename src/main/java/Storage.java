@@ -57,12 +57,12 @@ public class Storage { // helps read and write data to Melodie.txt
         return tasks;
     }
 
-    public void write(ArrayList<Task> tasks) throws IOException {
+    public void write(TaskList tasks) throws IOException {
         Files.createDirectories(filePath.getParent());
 
         ArrayList<String> lines = new ArrayList<>();
 
-        for (Task task : tasks) {
+        for (Task task : tasks.getTasks()) {
             lines.add(task.toStorageString());
         }
 
