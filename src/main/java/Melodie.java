@@ -91,8 +91,9 @@ public class Melodie {
                         if (deadlineParts.length != 2
                                 || deadlineParts[0].isBlank()
                                 || deadlineParts[1].isBlank()) {
-                            throw new MelodieException("Please enter a valid task description and due date :(\n"
-                                                     + "Format: deadline <task description> /by <due date>");
+                            throw new MelodieException("Please enter a valid task description, due date, and time :(\n"
+                                                     + "    Format: deadline <task description> /by <d/M/yyyy HHmm>\n"
+                                                     + "    Example: deadline return book /by 2/12/2019 1800");
                         }
 
                         String description = deadlineParts[0].trim();
@@ -109,16 +110,20 @@ public class Melodie {
                         String[] fromParts = taskDescription.split("/from ", 2);
                         if (fromParts.length != 2
                                 || fromParts[0].isBlank()) {
-                            throw new MelodieException("Please enter a valid task description, start, and end :(\n"
-                                                     + "Format: event <description> /from <start> /to <end>");
+                            throw new MelodieException(
+                                    "Please enter a valid task description, start date and time, and end date and time :(\n"
+                                    + "    Format: event <description> /from <d/M/yyyy HHmm> /to <d/M/yyyy HHmm>\n"
+                                    + "    Example: event project meeting /from 2/12/2019 1400 /to 2/12/2019 1600");
                         }
 
                         String[] toParts = fromParts[1].split("/to ", 2);
                         if (toParts.length != 2
                                 || toParts[0].isBlank()
                                 || toParts[1].isBlank()) {
-                            throw new MelodieException("Please enter a valid task description :(\n"
-                                                     + "Format: event <description> /from <start> /to <end>");
+                            throw new MelodieException(
+                                    "Please enter a valid task description, start date and time, and end date and time :(\n"
+                                    + "    Format: event <description> /from <d/M/yyyy HHmm> /to <d/M/yyyy HHmm>\n"
+                                    + "    Example: event project meeting /from 2/12/2019 1400 /to 2/12/2019 1600");
                         }
 
                         String descriptions = fromParts[0].trim(); // there has to be a more scalable way
