@@ -1,3 +1,4 @@
 D | 0 | play 500 games | 2026-12-08T23:59
 E | 0 | Chasca's birthday | 2026-12-10T00:00 | 2026-12-10T23:59
 T | 0 | pull C6 Nicole for Chasca melt team when she reruns
+T | 0 | finish ip
