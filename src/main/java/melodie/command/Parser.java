@@ -74,6 +74,22 @@ public class Parser {
     }
 
     /**
+     * Parses and validates the keyword of a find command.
+     * @param arguments Arguments supplied with the find command.
+     * @return Search keyword without surrounding whitespace.
+     * @throws MelodieException If the search keyword is blank.
+     */
+    public String parseFindKeyword(String arguments) throws MelodieException {
+        String keyword = arguments.trim();
+        if (keyword.isBlank()) {
+            throw new MelodieException("Please enter a keyword to search for :(\n"
+                    + "    Format: find <keyword>");
+        }
+        return keyword;
+    }
+
+
+    /**
      * Creates a todo task from its command arguments.
      *
      * @param taskDescription Description of the todo task.

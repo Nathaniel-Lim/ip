@@ -113,6 +113,11 @@ public class Melodie {
                 this.ui.showTaskList(this.tasks);
                 break;
 
+            case FIND:
+                String keyword = this.parser.parseFindKeyword(parsedCommand.getArguments());
+                this.ui.showMatchingTasks(this.tasks.find(keyword));
+                break;
+
             default:
                 throw new MelodieException("Sorry~ I don't recognise that command :(");
         }

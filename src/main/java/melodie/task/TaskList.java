@@ -3,6 +3,7 @@ package melodie.task;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Manages the tasks held by Melodie.
@@ -90,6 +91,24 @@ public class TaskList {
      */
     public boolean isValidIndex(int index) {
         return index >= 0 && index < this.tasks.size();
+    }
+
+    /**
+     * Finds tasks whose descriptions contain the specified keyword, ignoring letter case.
+     *
+     * @param keyword Keyword to find in task descriptions.
+     * @return Matching tasks in their original task-list order.
+     */
+    public List<Task> find(String keyword) {
+        String normalizedKeyword = keyword.toLowerCase(Locale.ROOT);
+        ArrayList<Task> matchingTasks = new ArrayList<>();
+        for (Task task : this.tasks) {
+            String normalizedDescription = task.getDescription().toLowerCase(Locale.ROOT);
+            if (normalizedDescription.contains(normalizedKeyword)) {
+                matchingTasks.add(task);
+            }
+        }
+        return matchingTasks;
     }
 
     /**

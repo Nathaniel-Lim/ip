@@ -12,6 +12,7 @@ public enum Command {
     MARK,
     UNMARK,
     LIST,
+    FIND,
     DELETE,
     BYE;
 
