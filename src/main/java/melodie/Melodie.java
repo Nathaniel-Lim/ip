@@ -96,6 +96,11 @@ public class Melodie {
                 this.ui.showTaskAdded(task, this.tasks.size());
                 break;
 
+            case FIND:
+                String keyword = this.parser.parseFindKeyword(parsedCommand.getArguments());
+                this.ui.showMatchingTasks(this.tasks.find(keyword));
+                break;
+
             case LIST: // does not change the list
                 this.ui.showTaskList(this.tasks);
                 break;
