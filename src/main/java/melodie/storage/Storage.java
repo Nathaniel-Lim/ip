@@ -14,21 +14,41 @@ import melodie.task.TaskList;
 import melodie.task.Todo;
 
 /**
- *  T | 1 | read book
- *  D | 0 | return book | June 6th
- *  E | 0 | project meeting | Mon 2pm | 4pm
+ * Loads and saves Melodie's tasks using a text file.
+ *
+ * <p>Each task is stored on one line in one of the following formats:
+ * <pre>
+ * T | 1 | read book
+ * D | 0 | return book | 2019-12-02T18:00
+ * E | 0 | project meeting | 2019-12-02T14:00 | 2019-12-02T16:00
+ * </pre>
  */
 public class Storage { // helps read and write data to Melodie.txt
     private final Path filePath;
 
+    /**
+     * Creates storage that uses Melodie's default data-file path.
+     */
     public Storage() {
         this(Path.of("data", "Melodie.txt"));
     }
 
+    /**
+     * Creates storage that uses the specified data-file path.
+     *
+     * @param filePath Path of the file used to load and save tasks.
+     */
     Storage(Path filePath) {
         this.filePath = filePath;
     }
 
+    /**
+     * Reads all tasks from the data file.
+     * Returns an empty list if the data file does not exist.
+     *
+     * @return Tasks loaded from the data file.
+     * @throws IOException If the data file cannot be read.
+     */
     public ArrayList<Task> read() throws IOException {
         if (!Files.exists(filePath)) {
             return new ArrayList<>();
@@ -73,6 +93,12 @@ public class Storage { // helps read and write data to Melodie.txt
         return tasks;
     }
 
+    /**
+     * Writes all tasks to the data file, creating its parent directory when needed.
+     *
+     * @param tasks Tasks to save.
+     * @throws IOException If the data file cannot be written.
+     */
     public void write(TaskList tasks) throws IOException {
         Files.createDirectories(filePath.getParent());
 

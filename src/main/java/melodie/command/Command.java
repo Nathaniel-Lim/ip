@@ -2,6 +2,9 @@ package melodie.command;
 
 import melodie.MelodieException;
 
+/**
+ * Lists the commands recognized by Melodie.
+ */
 public enum Command {
     TODO,
     DEADLINE,
@@ -12,6 +15,13 @@ public enum Command {
     DELETE,
     BYE;
 
+    /**
+     * Converts a command word into its matching command without regard to letter case.
+     *
+     * @param input Command word entered by the user.
+     * @return Command matching the given word.
+     * @throws MelodieException If the command word is not recognized.
+     */
     public static Command from(String input) throws MelodieException {
         try {
             return Command.valueOf(input.toUpperCase());

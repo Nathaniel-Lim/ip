@@ -4,6 +4,9 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
+/**
+ * Represents a task that occurs between a start date and an end date.
+ */
 public class Event extends Task {
     private static final DateTimeFormatter DISPLAY_DATE_TIME_FORMATTER =
             DateTimeFormatter.ofPattern("MMM dd uuuu, h:mm a", Locale.ENGLISH);
@@ -11,6 +14,13 @@ public class Event extends Task {
     private final LocalDateTime start; // 何時から、何時までですか
     private final LocalDateTime end;
 
+    /**
+     * Creates an event task with the specified description, start date, and end date.
+     *
+     * @param description Description of the event task.
+     * @param start Date and time at which the event starts.
+     * @param end Date and time at which the event ends.
+     */
     public Event(String description, LocalDateTime start, LocalDateTime end) {
         super(description);
         this.start = start;
@@ -20,9 +30,9 @@ public class Event extends Task {
     /**
      * Creates an event from the ISO date-time format used in the storage file.
      *
-     * @param description description of the event
-     * @param start start date and time in ISO format
-     * @param end end date and time in ISO format
+     * @param description Description of the event task.
+     * @param start Start date and time in ISO format.
+     * @param end End date and time in ISO format.
      */
     public Event(String description, String start, String end) {
         this(description, LocalDateTime.parse(start), LocalDateTime.parse(end));

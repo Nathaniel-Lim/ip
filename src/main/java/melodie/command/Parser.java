@@ -19,6 +19,13 @@ public class Parser {
             DateTimeFormatter.ofPattern("d/M/uuuu HHmm")
                     .withResolverStyle(ResolverStyle.STRICT);
 
+    /**
+     * Parses raw user input into a command and its arguments.
+     *
+     * @param input Raw command entered by the user.
+     * @return Parsed command and arguments.
+     * @throws MelodieException If the command word is not recognized.
+     */
     public ParsedCommand parse(String input) throws MelodieException {
         String[] parts = input.trim().split(" ", 2);
         Command command = Command.from(parts[0]);
@@ -29,9 +36,9 @@ public class Parser {
     /**
      * Converts the arguments of a task-creation command into the matching task type.
      *
-     * @param parsedCommand task-creation command and its arguments
-     * @return parsed task
-     * @throws MelodieException if the command arguments are invalid
+     * @param parsedCommand Task-creation command and its arguments.
+     * @return Task created from the command arguments.
+     * @throws MelodieException If the command does not create a task or its arguments are invalid.
      */
     public Task parseTask(ParsedCommand parsedCommand) throws MelodieException {
         try {
@@ -51,6 +58,13 @@ public class Parser {
         }
     }
 
+    /**
+     * Converts a user-provided task number into a zero-based list index.
+     *
+     * @param arguments Task number entered by the user.
+     * @return Zero-based index of the specified task.
+     * @throws MelodieException If the task number is not a valid integer.
+     */
     public int parseTaskIndex(String arguments) throws MelodieException {
         try {
             return Integer.parseInt(arguments) - 1;
@@ -59,6 +73,13 @@ public class Parser {
         }
     }
 
+    /**
+     * Creates a todo task from its command arguments.
+     *
+     * @param taskDescription Description of the todo task.
+     * @return Todo task with the specified description.
+     * @throws MelodieException If the description is blank.
+     */
     private Todo parseTodo(String taskDescription) throws MelodieException {
         if (taskDescription.isBlank()) {
             throw new MelodieException("You can't leave the description of a todo empty :(");
@@ -66,6 +87,13 @@ public class Parser {
         return new Todo(taskDescription);
     }
 
+    /**
+     * Creates a deadline task from its description and due date arguments.
+     *
+     * @param taskDescription Deadline description and due date arguments.
+     * @return Deadline task created from the arguments.
+     * @throws MelodieException If the description or due date is missing.
+     */
     private Deadline parseDeadline(String taskDescription) throws MelodieException {
         String[] deadlineParts = taskDescription.split("/by ", 2);
         if (deadlineParts.length != 2
@@ -83,6 +111,13 @@ public class Parser {
         return new Deadline(description, dueDate);
     }
 
+    /**
+     * Creates an event task from its description, start date, and end date arguments.
+     *
+     * @param taskDescription Event description, start date, and end date arguments.
+     * @return Event task created from the arguments.
+     * @throws MelodieException If an argument is missing or the event ends before it starts.
+     */
     private Event parseEvent(String taskDescription) throws MelodieException {
         String[] fromParts = taskDescription.split("/from ", 2);
         if (fromParts.length != 2
