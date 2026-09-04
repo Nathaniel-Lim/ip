@@ -10,7 +10,7 @@ import melodie.task.TaskList;
  * Handles console input and output for Melodie.
  */
 public class Ui {
-    private static final String NAME = "Melodie";
+    private static final String CHATBOT_NAME = "Melodie";
     private static final String BANNER =
             " __  __      _           _ _\n"
             + "|  \\/  | ___| | ___   __| (_) ___\n"
@@ -43,7 +43,7 @@ public class Ui {
     public void showIntro() {
         System.out.println("____________________________________________________________\n"
                 + BANNER + "\n"
-                + "Hello ♪ I'm " + NAME + "~\n"
+                + "Hello ♪ I'm " + CHATBOT_NAME + "~\n"
                 + "What master piece shall we play?\n"
                 + "____________________________________________________________\n");
     }
@@ -154,7 +154,8 @@ public class Ui {
         this.scanner.close();
     }
 
-    /** Displays tasks whose descriptions match a search keyword.
+    /**
+     * Displays tasks whose descriptions match a search keyword.
      *
      * @param matchingTasks Tasks matching the search keyword.
      */

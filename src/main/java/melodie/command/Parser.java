@@ -75,6 +75,7 @@ public class Parser {
 
     /**
      * Parses and validates the keyword of a find command.
+     *
      * @param arguments Arguments supplied with the find command.
      * @return Search keyword without surrounding whitespace.
      * @throws MelodieException If the search keyword is blank.
