@@ -24,9 +24,8 @@ public class FindParserTest {
     public void parseFindKeyword_blankKeyword_throwsMelodieException() {
         Parser parser = new Parser();
 
-        MelodieException exception = assertThrows(
-                MelodieException.class,
-                () -> parser.parseFindKeyword("   "));
+        MelodieException exception =
+                assertThrows(MelodieException.class, () -> parser.parseFindKeyword("   "));
 
         assertEquals("Please enter a keyword to search for :(\n"
                 + "    Format: find <keyword>", exception.getMessage());
