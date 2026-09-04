@@ -74,9 +74,8 @@ public class ParserTest {
         ParsedCommand parsedCommand = new ParsedCommand(
                 Command.DEADLINE, "farm 600 Intertwined Fate /by 67/67/2067 1800");
 
-        MelodieException exception = assertThrows(
-                MelodieException.class,
-                () -> parser.parseTask(parsedCommand));
+        MelodieException exception =
+                assertThrows(MelodieException.class, () -> parser.parseTask(parsedCommand));
         // The lambda defers execution so assertThrows can capture the exception.
         assertEquals("Please enter the date and time in d/M/yyyy HHmm format :(\n"
                 + "    Example: 2/12/2019 1800", exception.getMessage());
@@ -89,9 +88,8 @@ public class ParserTest {
                 Command.EVENT,
                 "try not to get F for CS2013T /from 10/2/2027 2300 /to 10/2/2027 1800");
 
-        MelodieException exception = assertThrows(
-                MelodieException.class,
-                () -> parser.parseTask(parsedCommand));
+        MelodieException exception =
+                assertThrows(MelodieException.class, () -> parser.parseTask(parsedCommand));
         assertEquals("The event cannot end before it starts :(", exception.getMessage());
     }
 
@@ -100,9 +98,8 @@ public class ParserTest {
         Parser parser = new Parser();
         ParsedCommand parsedCommand = new ParsedCommand(Command.TODO, "");
 
-        MelodieException exception = assertThrows(
-                MelodieException.class,
-                () -> parser.parseTask(parsedCommand));
+        MelodieException exception =
+                assertThrows(MelodieException.class, () -> parser.parseTask(parsedCommand));
         assertEquals("You can't leave the description of a todo empty :(", exception.getMessage());
     }
 }
