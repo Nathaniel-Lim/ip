@@ -44,12 +44,12 @@ final class CommandHint {
         int byIndex = arguments.indexOf("/by");
         if (byIndex < 0) {
             String descriptionHint = arguments.isBlank() ? DESCRIPTION_FIELD : "";
-            return joinMissing(descriptionHint, "/by " + getDateTimeField("due"));
+            return joinNonEmptyFields(descriptionHint, "/by " + getDateTimeField("due"));
         }
 
         String description = arguments.substring(0, byIndex).trim();
         String dueDateTime = arguments.substring(byIndex + "/by".length()).trim();
-        return joinMissing(
+        return joinNonEmptyFields(
                 description.isEmpty() ? DESCRIPTION_FIELD : "",
                 getDateTimeHint(dueDateTime, "due"));
     }
@@ -58,7 +58,7 @@ final class CommandHint {
         int fromIndex = arguments.indexOf("/from");
         if (fromIndex < 0) {
             String descriptionHint = arguments.isBlank() ? DESCRIPTION_FIELD : "";
-            return joinMissing(
+            return joinNonEmptyFields(
                     descriptionHint,
                     "/from " + getDateTimeField("start"),
                     "/to " + getDateTimeField("end"));
@@ -68,7 +68,7 @@ final class CommandHint {
         String dateTimeArguments = arguments.substring(fromIndex + "/from".length()).trim();
         int toIndex = dateTimeArguments.indexOf("/to");
         if (toIndex < 0) {
-            return joinMissing(
+            return joinNonEmptyFields(
                     description.isEmpty() ? DESCRIPTION_FIELD : "",
                     getDateTimeHint(dateTimeArguments, "start"),
                     "/to " + getDateTimeField("end"));
@@ -76,7 +76,7 @@ final class CommandHint {
 
         String startDateTime = dateTimeArguments.substring(0, toIndex).trim();
         String endDateTime = dateTimeArguments.substring(toIndex + "/to".length()).trim();
-        return joinMissing(
+        return joinNonEmptyFields(
                 description.isEmpty() ? DESCRIPTION_FIELD : "",
                 getDateTimeHint(startDateTime, "start"),
                 getDateTimeHint(endDateTime, "end"));
@@ -96,7 +96,13 @@ final class CommandHint {
         return "<" + fieldName + " date d/M/yyyy HHmm>";
     }
 
-    private static String joinMissing(String... fields) {
+    /**
+     * Joins a variable number of non-empty field hints, separated by spaces.
+     *
+     * @param fields Field hints to join.
+     * @return Joined non-empty field hints.
+     */
+    private static String joinNonEmptyFields(String... fields) {
         StringJoiner hint = new StringJoiner(" ");
         for (String field : fields) {
             if (!field.isEmpty()) {
