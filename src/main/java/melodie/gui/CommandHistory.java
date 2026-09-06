@@ -29,7 +29,7 @@ final class CommandHistory {
      * @param currentInput Text currently in the input field.
      * @return Previous command, or an empty value when already at the oldest command.
      */
-    Optional<String> previous(String currentInput) {
+    Optional<String> getPreviousCommand(String currentInput) {
         if (this.currentIndex == 0) {
             return Optional.empty();
         }
@@ -46,7 +46,7 @@ final class CommandHistory {
      *
      * @return Next command or draft, or an empty value when navigation cannot continue.
      */
-    Optional<String> next() {
+    Optional<String> getNextCommand() {
         if (this.currentIndex >= this.commands.size()) {
             return Optional.empty();
         }

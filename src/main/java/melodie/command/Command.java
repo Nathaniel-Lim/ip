@@ -3,7 +3,7 @@ package melodie.command;
 import melodie.MelodieException;
 
 /**
- * Lists the commands recognized by Melodie.
+ * Lists the commands recognised by Melodie.
  */
 public enum Command {
     TODO,
@@ -21,7 +21,7 @@ public enum Command {
      *
      * @param input Command word entered by the user.
      * @return Command matching the given word.
-     * @throws MelodieException If the command word is not recognized.
+     * @throws MelodieException If the command word is not recognised.
      */
     public static Command from(String input) throws MelodieException {
         try {

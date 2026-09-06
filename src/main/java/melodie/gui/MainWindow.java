@@ -107,9 +107,9 @@ public class MainWindow extends AnchorPane {
     private void handleHistoryNavigation(KeyEvent event) {
         Optional<String> replacement;
         if (event.getCode() == KeyCode.UP) {
-            replacement = this.commandHistory.previous(this.userInput.getText());
+            replacement = this.commandHistory.getPreviousCommand(this.userInput.getText());
         } else if (event.getCode() == KeyCode.DOWN) {
-            replacement = this.commandHistory.next();
+            replacement = this.commandHistory.getNextCommand();
         } else {
             return;
         }

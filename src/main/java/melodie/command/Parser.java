@@ -24,7 +24,7 @@ public class Parser {
      *
      * @param input Raw command entered by the user.
      * @return Parsed command and arguments.
-     * @throws MelodieException If the command word is not recognized.
+     * @throws MelodieException If the command word is not recognised.
      */
     public ParsedCommand parse(String input) throws MelodieException {
         String[] parts = input.trim().split(" ", 2);
@@ -88,8 +88,6 @@ public class Parser {
         }
         return keyword;
     }
-
-
     /**
      * Creates a todo task from its command arguments.
      *
@@ -122,10 +120,10 @@ public class Parser {
         }
 
         String description = deadlineParts[0].trim();
-        String dueDateString = deadlineParts[1].trim();
-        LocalDateTime dueDate = LocalDateTime.parse(
-                dueDateString, INPUT_DATE_TIME_FORMATTER);
-        return new Deadline(description, dueDate);
+        String dueDateTimeString = deadlineParts[1].trim();
+        LocalDateTime dueDateTime = LocalDateTime.parse(
+                dueDateTimeString, INPUT_DATE_TIME_FORMATTER);
+        return new Deadline(description, dueDateTime);
     }
 
     /**
@@ -156,15 +154,15 @@ public class Parser {
         }
 
         String description = fromParts[0].trim();
-        String startString = toParts[0].trim();
-        String endString = toParts[1].trim();
-        LocalDateTime start = LocalDateTime.parse(
-                startString, INPUT_DATE_TIME_FORMATTER);
-        LocalDateTime end = LocalDateTime.parse(
-                endString, INPUT_DATE_TIME_FORMATTER);
-        if (end.isBefore(start)) {
+        String startDateTimeString = toParts[0].trim();
+        String endDateTimeString = toParts[1].trim();
+        LocalDateTime startDateTime = LocalDateTime.parse(
+                startDateTimeString, INPUT_DATE_TIME_FORMATTER);
+        LocalDateTime endDateTime = LocalDateTime.parse(
+                endDateTimeString, INPUT_DATE_TIME_FORMATTER);
+        if (endDateTime.isBefore(startDateTime)) {
             throw new MelodieException("The event cannot end before it starts :(");
         }
-        return new Event(description, start, end);
+        return new Event(description, startDateTime, endDateTime);
     }
 }

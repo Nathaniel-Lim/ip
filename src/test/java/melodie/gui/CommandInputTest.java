@@ -15,12 +15,12 @@ public class CommandInputTest {
         history.record("list");
         history.record("find book");
 
-        assertEquals(Optional.of("find book"), history.previous("todo unfinished"));
-        assertEquals(Optional.of("list"), history.previous("find book"));
-        assertEquals(Optional.empty(), history.previous("list"));
-        assertEquals(Optional.of("find book"), history.next());
-        assertEquals(Optional.of("todo unfinished"), history.next());
-        assertEquals(Optional.empty(), history.next());
+        assertEquals(Optional.of("find book"), history.getPreviousCommand("todo unfinished"));
+        assertEquals(Optional.of("list"), history.getPreviousCommand("find book"));
+        assertEquals(Optional.empty(), history.getPreviousCommand("list"));
+        assertEquals(Optional.of("find book"), history.getNextCommand());
+        assertEquals(Optional.of("todo unfinished"), history.getNextCommand());
+        assertEquals(Optional.empty(), history.getNextCommand());
     }
 
     @Test
@@ -28,12 +28,12 @@ public class CommandInputTest {
         CommandHistory history = new CommandHistory();
         history.record("list");
         history.record("find book");
-        history.previous("");
+        history.getPreviousCommand("");
 
         assertTrue(history.isBrowsing());
         history.stopBrowsing();
         assertFalse(history.isBrowsing());
-        assertEquals(Optional.of("find book"), history.previous("find edited"));
+        assertEquals(Optional.of("find book"), history.getPreviousCommand("find edited"));
     }
 
     @Test
