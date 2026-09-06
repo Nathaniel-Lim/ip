@@ -22,7 +22,7 @@ public class TaskList {
     /**
      * Creates a task list containing a copy of the specified tasks.
      *
-     * @param tasks Tasks with which to initialize the task list.
+     * @param tasks Tasks with which to initialise the task list.
      */
     public TaskList(List<Task> tasks) {
         this.tasks = new ArrayList<>(tasks);

@@ -21,3 +21,5 @@ text-ui-test/EXPECTED-UNIX.TXT
 
 # ignore all class files anywhere in the repo
 *.class
+
+/src/main/resources/images/background.PNG

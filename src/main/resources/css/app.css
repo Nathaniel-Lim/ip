@@ -1,0 +1,39 @@
+.app-root {
+    -fx-background-image: url("../images/background.jpeg");
+    -fx-background-size: 1250px auto;
+    -fx-background-position: 45% center;
+    -fx-background-repeat: repeat;
+}
+
+.scroll-pane,
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+.input-bar {
+    -fx-background-color: white;
+    -fx-padding: 9px;
+}
+
+.command-input {
+    -fx-prompt-text-fill: #777777;
+}
+
+.command-hint {
+    -fx-font-size: 11px;
+    -fx-text-fill: #777777;
+}
+
+.message-bubble {
+    -fx-background-radius: 12px;
+    -fx-font-size: 14px;
+    -fx-padding: 8px 12px;
+}
+
+.user-bubble {
+    -fx-background-color: #d9fdd3;
+}
+
+.melodie-bubble {
+    -fx-background-color: white;
+}

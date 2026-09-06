@@ -2,6 +2,7 @@ package melodie;
 
 import java.io.IOException;
 import java.time.format.DateTimeParseException;
+import java.util.List;
 
 import melodie.command.Command;
 import melodie.command.ParsedCommand;
@@ -15,10 +16,16 @@ import melodie.ui.Ui;
  * Coordinates the components of the Melodie chatbot.
  */
 public class Melodie {
+    private static final String FAREWELL_MESSAGE = "Farewell, come play with me again :D";
+    private static final String LOADING_ERROR_MESSAGE = "Sorry~ I couldn't load your saved tasks :(";
+    private static final String SAVING_ERROR_MESSAGE = "Sorry! I couldn't save your tasks :(";
+
     private final Ui ui;
     private final Storage storage;
     private final Parser parser;
     private TaskList tasks;
+    private boolean hasLoadingError;
+    private boolean isExitRequested;
 
     /**
      * Creates a Melodie chatbot with its user interface, storage, parser, and task list.
@@ -28,6 +35,7 @@ public class Melodie {
         this.storage = new Storage();
         this.parser = new Parser();
         this.tasks = new TaskList();
+        this.loadTasks();
     }
 
     /**
@@ -35,28 +43,62 @@ public class Melodie {
      */
     public void run() {
         this.ui.showIntro();
-        this.loadTasks();
+        if (this.hasLoadingError) {
+            this.ui.showResponse(LOADING_ERROR_MESSAGE);
+        }
 
-        while (true) {
-            try {
-                ParsedCommand parsedCommand = this.parser.parse(this.ui.readCommand());
-                this.ui.showLine();
-
-                if (parsedCommand.getCommand() == Command.BYE) {
-                    break;
-                }
-
-                this.executeCommand(parsedCommand);
-            } catch (MelodieException e) {
-                this.ui.showError(e.getMessage());
-            } catch (IOException e) {
-                this.ui.showSavingError();
-            }
+        while (!this.isExitRequested) {
+            String response = this.getResponse(this.ui.readCommand());
+            this.ui.showLine();
+            this.ui.showResponse(response);
             this.ui.showLine();
         }
 
-        this.ui.showFarewell();
         this.ui.close();
+    }
+
+    /**
+     * Returns the greeting displayed when the graphical interface starts.
+     *
+     * @return Greeting and, when applicable, a saved-data loading warning.
+     */
+    public String getGreeting() {
+        String greeting = "Hello ♪ I'm Melodie~\nWhat master piece shall we play?";
+        if (this.hasLoadingError) {
+            return greeting + "\n\n" + LOADING_ERROR_MESSAGE;
+        }
+        return greeting;
+    }
+
+    /**
+     * Processes one command and returns the response for any user interface to display.
+     *
+     * @param input Command entered by the user.
+     * @return Melodie's response, including validation and saving errors.
+     */
+    public String getResponse(String input) {
+        this.isExitRequested = false;
+        try {
+            ParsedCommand parsedCommand = this.parser.parse(input);
+            if (parsedCommand.getCommand() == Command.BYE) {
+                this.isExitRequested = true;
+                return FAREWELL_MESSAGE;
+            }
+            return this.executeCommand(parsedCommand);
+        } catch (MelodieException e) {
+            return e.getMessage();
+        } catch (IOException e) {
+            return SAVING_ERROR_MESSAGE;
+        }
+    }
+
+    /**
+     * Reports whether the most recently processed command requested that Melodie close.
+     *
+     * @return {@code true} after a valid {@code bye} command.
+     */
+    public boolean isExitRequested() {
+        return this.isExitRequested;
     }
 
     /**
@@ -67,7 +109,7 @@ public class Melodie {
         try {
             this.tasks = new TaskList(this.storage.read());
         } catch (IOException | DateTimeParseException e) {
-            this.ui.showLoadingError();
+            this.hasLoadingError = true;
             this.tasks = new TaskList();
         }
     }
@@ -76,10 +118,11 @@ public class Melodie {
      * Executes a parsed command and updates storage when the task list changes.
      *
      * @param parsedCommand Command and arguments to execute.
+     * @return Response describing the result of executing the command.
      * @throws MelodieException If the command or its arguments are invalid.
      * @throws IOException If a change to the task list cannot be saved.
      */
-    private void executeCommand(ParsedCommand parsedCommand) throws MelodieException, IOException {
+    private String executeCommand(ParsedCommand parsedCommand) throws MelodieException, IOException {
         switch (parsedCommand.getCommand()) {
             case MARK, UNMARK, DELETE:
                 int taskIndex = this.parser.parseTaskIndex(parsedCommand.getArguments());
@@ -90,37 +133,65 @@ public class Melodie {
                 if (parsedCommand.getCommand() == Command.MARK) {
                     Task markedTask = this.tasks.mark(taskIndex);
                     this.storage.write(this.tasks);
-                    this.ui.showTaskMarked(markedTask);
+                    return "Good job! Task has been marked as done~\n" + markedTask;
                 } else if (parsedCommand.getCommand() == Command.UNMARK) {
                     Task unmarkedTask = this.tasks.unmark(taskIndex);
                     this.storage.write(this.tasks);
-                    this.ui.showTaskUnmarked(unmarkedTask);
+                    return "Task has been marked as incomplete, good luck ♫\n" + unmarkedTask;
                 } else {
                     Task deletedTask = this.tasks.delete(taskIndex);
                     this.storage.write(this.tasks);
-                    this.ui.showTaskDeleted(deletedTask, this.tasks.size());
+                    return "Task has been removed ♪ goodbye task~\n"
+                            + deletedTask + "\n"
+                            + this.getTaskCountMessage();
                 }
-                break;
 
             case TODO, DEADLINE, EVENT:
                 Task task = this.parser.parseTask(parsedCommand);
                 this.tasks.add(task);
                 this.storage.write(this.tasks);
-                this.ui.showTaskAdded(task, this.tasks.size());
-                break;
+                return "Task has been added successfully ♪\n"
+                        + task + "\n"
+                        + this.getTaskCountMessage();
 
             case LIST:
-                this.ui.showTaskList(this.tasks);
-                break;
+                return this.getTaskListMessage();
 
             case FIND:
                 String keyword = this.parser.parseFindKeyword(parsedCommand.getArguments());
-                this.ui.showMatchingTasks(this.tasks.find(keyword));
-                break;
+                return this.getMatchingTasksMessage(this.tasks.find(keyword));
 
             default:
                 throw new MelodieException("Sorry~ I don't recognise that command :(");
         }
+    }
+
+    private String getTaskCountMessage() {
+        return "There are " + this.tasks.size() + " task(s) awaiting your attention~";
+    }
+
+    private String getTaskListMessage() {
+        if (this.tasks.isEmpty()) {
+            return "Your list is currently empty; let's get started shall we? ♪";
+        }
+
+        StringBuilder response = new StringBuilder("Here are the tasks in your list ♪");
+        for (int i = 0; i < this.tasks.size(); i++) {
+            response.append("\n").append(i + 1).append(". ").append(this.tasks.get(i));
+        }
+        return response.toString();
+    }
+
+    private String getMatchingTasksMessage(List<Task> matchingTasks) {
+        if (matchingTasks.isEmpty()) {
+            return "I couldn't find any matching tasks :(";
+        }
+
+        StringBuilder response = new StringBuilder("Here are the matching tasks in your list ♪");
+        for (int i = 0; i < matchingTasks.size(); i++) {
+            response.append("\n").append(i + 1).append(". ").append(matchingTasks.get(i));
+        }
+        return response.toString();
     }
 
     /**
