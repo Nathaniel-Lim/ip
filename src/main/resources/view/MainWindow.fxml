@@ -32,7 +32,7 @@
                 <TextField fx:id="userInput" onAction="#handleUserInput"
                            promptText="Type a command..." HBox.hgrow="ALWAYS" />
                 <Button fx:id="sendButton" minWidth="72.0"
-                        onAction="#handleUserInput" text="Send" />
+                        onAction="#handleUserInput" text="Send ♪" />
             </children>
         </HBox>
     </children>

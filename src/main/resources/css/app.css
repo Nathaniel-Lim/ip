@@ -1,5 +1,8 @@
 .app-root {
-    -fx-background-color: #eef1f4;
+    -fx-background-image: url("../images/background.jpeg");
+    -fx-background-size: 1250px auto;
+    -fx-background-position: 45% center;
+    -fx-background-repeat: repeat;
 }
 
 .scroll-pane,
