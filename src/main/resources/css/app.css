@@ -1,0 +1,27 @@
+.app-root {
+    -fx-background-color: #eef1f4;
+}
+
+.scroll-pane,
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+.input-bar {
+    -fx-background-color: white;
+    -fx-padding: 9px;
+}
+
+.message-bubble {
+    -fx-background-radius: 12px;
+    -fx-font-size: 14px;
+    -fx-padding: 8px 12px;
+}
+
+.user-bubble {
+    -fx-background-color: #d9fdd3;
+}
+
+.melodie-bubble {
+    -fx-background-color: white;
+}
