@@ -18,6 +18,7 @@ import javafx.scene.layout.HBox;
  * Represents one chat row containing a message and its speaker's avatar.
  */
 public class DialogBox extends HBox {
+    private static final double MAX_DIALOG_WIDTH_RATIO = 0.72;
 
     @FXML
     private Label dialog;
@@ -38,6 +39,8 @@ public class DialogBox extends HBox {
 
         this.dialog.setText(text);
         this.displayPicture.setImage(image);
+        this.dialog.maxWidthProperty().bind(
+                this.widthProperty().multiply(MAX_DIALOG_WIDTH_RATIO));
     }
 
     /**

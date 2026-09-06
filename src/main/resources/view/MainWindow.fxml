@@ -29,7 +29,8 @@
               AnchorPane.leftAnchor="0.0"
               AnchorPane.rightAnchor="0.0">
             <children>
-                <TextField fx:id="userInput" onAction="#handleUserInput"
+                <TextField fx:id="userInput" maxWidth="1.7976931348623157E308"
+                           onAction="#handleUserInput"
                            promptText="Type a command..." HBox.hgrow="ALWAYS" />
                 <Button fx:id="sendButton" minWidth="72.0"
                         onAction="#handleUserInput" text="Send ♪" />
