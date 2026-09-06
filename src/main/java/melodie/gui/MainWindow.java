@@ -1,14 +1,18 @@
 package melodie.gui;
 
 import java.util.Objects;
+import java.util.Optional;
 
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
@@ -31,10 +35,15 @@ public class MainWindow extends AnchorPane {
     @FXML
     private Button sendButton;
 
+    @FXML
+    private Label commandHint;
+
     private final Image userImage = this.loadImage("/images/DaUser.jpeg");
     private final Image melodieImage = this.loadImage("/images/DaMelodie.jpeg");
+    private final CommandHistory commandHistory = new CommandHistory();
 
     private Melodie melodie;
+    private boolean isRestoringHistory;
 
     /**
      * Configures behaviour that depends on controls injected from FXML.
@@ -43,6 +52,13 @@ public class MainWindow extends AnchorPane {
     public void initialize() {
         this.dialogContainer.heightProperty().addListener((observable, oldHeight, newHeight) ->
                 this.scrollPane.setVvalue(1.0));
+        this.userInput.textProperty().addListener((observable, oldText, newText) -> {
+            this.commandHint.setText(CommandHint.getMissingFields(newText));
+            if (!this.isRestoringHistory && this.commandHistory.isBrowsing()) {
+                this.commandHistory.stopBrowsing();
+            }
+        });
+        this.userInput.addEventFilter(KeyEvent.KEY_PRESSED, this::handleHistoryNavigation);
     }
 
     /**
@@ -66,6 +82,7 @@ public class MainWindow extends AnchorPane {
             return;
         }
 
+        this.commandHistory.record(input);
         String response = this.melodie.getResponse(input);
         this.dialogContainer.getChildren().addAll(
                 DialogBox.getUserDialog(input, this.userImage),
@@ -80,6 +97,32 @@ public class MainWindow extends AnchorPane {
             exitDelay.setOnFinished(event -> Platform.exit());
             exitDelay.play();
         }
+    }
+
+    /**
+     * Replaces the current input with an older or newer submitted command.
+     *
+     * @param event Key press received by the command field.
+     */
+    private void handleHistoryNavigation(KeyEvent event) {
+        Optional<String> replacement;
+        if (event.getCode() == KeyCode.UP) {
+            replacement = this.commandHistory.previous(this.userInput.getText());
+        } else if (event.getCode() == KeyCode.DOWN) {
+            replacement = this.commandHistory.next();
+        } else {
+            return;
+        }
+
+        if (replacement.isEmpty()) {
+            return;
+        }
+
+        this.isRestoringHistory = true;
+        this.userInput.setText(replacement.get());
+        this.userInput.positionCaret(this.userInput.getLength());
+        this.isRestoringHistory = false;
+        event.consume();
     }
 
     private Image loadImage(String path) {
