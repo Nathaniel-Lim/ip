@@ -80,4 +80,16 @@ public class CommandInputTest {
         assertEquals("", CommandHint.getMissingFields("list"));
         assertEquals("", CommandHint.getMissingFields("bye"));
     }
+
+    @Test
+    public void commandHint_updateFields_showsOnlyMissingFields() {
+        assertEquals("<task number> </description|/by|/from|/to> <new value>",
+                CommandHint.getMissingFields("update"));
+        assertEquals("</description|/by|/from|/to> <new value>",
+                CommandHint.getMissingFields("update 2"));
+        assertEquals("<new value>",
+                CommandHint.getMissingFields("update 2 /description"));
+        assertEquals("",
+                CommandHint.getMissingFields("update 2 /description submit final report"));
+    }
 }

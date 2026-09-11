@@ -14,6 +14,7 @@ public enum Command {
     LIST,
     FIND,
     DELETE,
+    UPDATE,
     BYE;
 
     /**

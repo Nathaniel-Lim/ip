@@ -77,6 +77,20 @@ public class TaskList {
         return task;
     }
 
+    /**
+     * Replaces and returns the task at the specified index.
+     *
+     * @param index Zero-based index of the task to update.
+     * @param updatedTask Replacement task.
+     * @return Replacement task.
+     */
+    public Task update(int index, Task updatedTask) {
+        assert this.isValidIndex(index) : "Task index must be validated before updating";
+        assert updatedTask != null : "Updated task must not be null";
+        this.tasks.set(index, updatedTask);
+        return updatedTask;
+    }
+
     public Task get(int index) {
         assert this.isValidIndex(index) : "Task index must be valid before retrieval";
         return this.tasks.get(index);

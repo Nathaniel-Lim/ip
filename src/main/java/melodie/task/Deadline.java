@@ -34,6 +34,10 @@ public class Deadline extends Task {
         this(description, LocalDateTime.parse(dueDateTime));
     }
 
+    public LocalDateTime getDueDateTime() {
+        return this.dueDateTime;
+    }
+
     @Override
     public String toStorageString() {
         return "D | " + super.toStorageString()

@@ -18,3 +18,22 @@ empty task list.
 
 After restarting Melodie, run `list` and confirm that the dates resolved in
 ND-1 to ND-6 remain the same calendar dates rather than being recalculated.
+
+## C-Update
+
+Start Melodie with one todo, one deadline, and one event. Mark at least one of
+them as complete, then run `list` to obtain their task numbers.
+
+| ID | Command | Expected result |
+| --- | --- | --- |
+| U-1 | `update 1 /description revised description` | Changes only task 1's description and preserves its type and completion status. |
+| U-2 | `update 2 /by tomorrow 1800` | Changes only the deadline's due date and time. |
+| U-3 | `update 3 /from Mon 1400` | Changes only the event's start date and time, provided it remains before the end. |
+| U-4 | `update 3 /to Mon 1700` | Changes only the event's end date and time, provided it remains after the start. |
+| U-5 | `update 1 /by tomorrow 1800` | Rejects `/by` if task 1 is a todo and leaves the task unchanged. |
+| U-6 | `update 3 /to today 0000` | Rejects the update if the resulting event would end before it starts. |
+| U-7 | `update 99 /description missing task` | Rejects an out-of-range task number. |
+| U-8 | `update 1 /description` | Rejects a missing replacement value and displays the update format. |
+
+Restart Melodie and run `list`. Confirm that every successful update remains
+saved and unsuccessful updates did not alter any task.

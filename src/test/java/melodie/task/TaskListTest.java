@@ -48,4 +48,18 @@ public class TaskListTest {
 
         assertTrue(actualTasks.isEmpty());
     }
+
+    @Test
+    public void update_validIndex_replacesOnlySelectedTask() {
+        TaskList tasks = new TaskList();
+        tasks.add(new Todo("first task"));
+        tasks.add(new Todo("second task"));
+        Todo replacementTask = new Todo("updated first task");
+
+        Task actualTask = tasks.update(0, replacementTask);
+
+        assertEquals(replacementTask, actualTask);
+        assertEquals(replacementTask, tasks.get(0));
+        assertEquals("second task", tasks.get(1).getDescription());
+    }
 }
