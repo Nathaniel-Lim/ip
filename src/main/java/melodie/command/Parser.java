@@ -1,9 +1,15 @@
 package melodie.command;
 
+import java.time.Clock;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.format.ResolverStyle;
+import java.time.temporal.TemporalAdjusters;
+import java.util.Locale;
 
 import melodie.MelodieException;
 import melodie.task.Deadline;
@@ -15,9 +21,37 @@ import melodie.task.Todo;
  * Interprets user commands and converts their arguments into task data.
  */
 public class Parser {
+    private static final String DATE_TIME_FORMATS =
+            "d/M/yyyy HHmm, today HHmm, tomorrow HHmm, or <weekday> HHmm";
+    private static final String DATE_TIME_ERROR_MESSAGE =
+            "Please enter a valid date and time :(\n"
+                    + "    Formats: " + DATE_TIME_FORMATS + "\n"
+                    + "    Examples: 2/12/2019 1800, tomorrow 0900, Mon 1400";
     private static final DateTimeFormatter INPUT_DATE_TIME_FORMATTER =
             DateTimeFormatter.ofPattern("d/M/uuuu HHmm")
                     .withResolverStyle(ResolverStyle.STRICT);
+    private static final DateTimeFormatter INPUT_TIME_FORMATTER =
+            DateTimeFormatter.ofPattern("HHmm")
+                    .withResolverStyle(ResolverStyle.STRICT);
+
+    private final Clock clock;
+
+    /**
+     * Creates a parser that resolves natural dates using the system date.
+     */
+    public Parser() {
+        this(Clock.systemDefaultZone());
+    }
+
+    /**
+     * Creates a parser that resolves natural dates using the specified clock.
+     *
+     * @param clock Clock used to determine the current date.
+     */
+    Parser(Clock clock) {
+        assert clock != null : "Parser clock must not be null";
+        this.clock = clock;
+    }
 
     /**
      * Parses raw user input into a command and its arguments.
@@ -53,8 +87,7 @@ public class Parser {
                     throw new MelodieException("This command does not create a task :(");
             }
         } catch (DateTimeParseException e) {
-            throw new MelodieException("Please enter the date and time in d/M/yyyy HHmm format :(\n"
-                    + "    Example: 2/12/2019 1800");
+            throw new MelodieException(DATE_TIME_ERROR_MESSAGE);
         }
     }
 
@@ -115,14 +148,14 @@ public class Parser {
                 || deadlineParts[0].isBlank()
                 || deadlineParts[1].isBlank()) {
             throw new MelodieException("Please enter a valid task description, due date, and time :(\n"
-                    + "    Format: deadline <task description> /by <d/M/yyyy HHmm>\n"
+                    + "    Format: deadline <task description> /by <date/time>\n"
+                    + "    Date/time: " + DATE_TIME_FORMATS + "\n"
                     + "    Example: deadline return book /by 2/12/2019 1800");
         }
 
         String description = deadlineParts[0].trim();
         String dueDateTimeString = deadlineParts[1].trim();
-        LocalDateTime dueDateTime = LocalDateTime.parse(
-                dueDateTimeString, INPUT_DATE_TIME_FORMATTER);
+        LocalDateTime dueDateTime = this.parseDateTime(dueDateTimeString);
         return new Deadline(description, dueDateTime);
     }
 
@@ -139,7 +172,8 @@ public class Parser {
                 || fromParts[0].isBlank()) {
             throw new MelodieException(
                     "Please enter a valid task description, start date and time, and end date and time :(\n"
-                    + "    Format: event <description> /from <d/M/yyyy HHmm> /to <d/M/yyyy HHmm>\n"
+                    + "    Format: event <description> /from <date/time> /to <date/time>\n"
+                    + "    Date/time: " + DATE_TIME_FORMATS + "\n"
                     + "    Example: event project meeting /from 2/12/2019 1400 /to 2/12/2019 1600");
         }
 
@@ -149,20 +183,100 @@ public class Parser {
                 || toParts[1].isBlank()) {
             throw new MelodieException(
                     "Please enter a valid task description, start date and time, and end date and time :(\n"
-                    + "    Format: event <description> /from <d/M/yyyy HHmm> /to <d/M/yyyy HHmm>\n"
+                    + "    Format: event <description> /from <date/time> /to <date/time>\n"
+                    + "    Date/time: " + DATE_TIME_FORMATS + "\n"
                     + "    Example: event project meeting /from 2/12/2019 1400 /to 2/12/2019 1600");
         }
 
         String description = fromParts[0].trim();
         String startDateTimeString = toParts[0].trim();
         String endDateTimeString = toParts[1].trim();
-        LocalDateTime startDateTime = LocalDateTime.parse(
-                startDateTimeString, INPUT_DATE_TIME_FORMATTER);
-        LocalDateTime endDateTime = LocalDateTime.parse(
-                endDateTimeString, INPUT_DATE_TIME_FORMATTER);
+        LocalDateTime startDateTime = this.parseDateTime(startDateTimeString);
+        LocalDateTime endDateTime = this.parseDateTime(endDateTimeString);
         if (endDateTime.isBefore(startDateTime)) {
             throw new MelodieException("The event cannot end before it starts :(");
         }
         return new Event(description, startDateTime, endDateTime);
+    }
+
+    /**
+     * Parses either the original numeric date-time format or a supported natural date.
+     *
+     * @param dateTimeText Date and time supplied in a task command.
+     * @return Parsed date and time.
+     * @throws DateTimeParseException If the date or time is invalid.
+     */
+    private LocalDateTime parseDateTime(String dateTimeText) throws DateTimeParseException {
+        try {
+            return LocalDateTime.parse(dateTimeText, INPUT_DATE_TIME_FORMATTER);
+        } catch (DateTimeParseException ignored) {
+            return this.parseNaturalDateTime(dateTimeText);
+        }
+    }
+
+    /**
+     * Resolves a relative date word and combines it with a 24-hour time.
+     *
+     * @param dateTimeText Natural date and time supplied in a task command.
+     * @return Resolved date and time.
+     * @throws DateTimeParseException If the natural date or time is invalid.
+     */
+    private LocalDateTime parseNaturalDateTime(String dateTimeText)
+            throws DateTimeParseException {
+        String[] parts = dateTimeText.trim().split("\\s+");
+        if (parts.length != 2) {
+            throw createDateTimeParseException(dateTimeText);
+        }
+
+        LocalDate date = this.parseNaturalDate(parts[0], dateTimeText);
+        LocalTime time = LocalTime.parse(parts[1], INPUT_TIME_FORMATTER);
+        return LocalDateTime.of(date, time);
+    }
+
+    /**
+     * Resolves today, tomorrow, or the next occurrence of an English weekday.
+     *
+     * @param dateText Natural date portion of the input.
+     * @param completeInput Complete input used when reporting parsing failures.
+     * @return Resolved calendar date.
+     * @throws DateTimeParseException If the date word is not supported.
+     */
+    private LocalDate parseNaturalDate(String dateText, String completeInput)
+            throws DateTimeParseException {
+        LocalDate today = LocalDate.now(this.clock);
+        return switch (dateText.toLowerCase(Locale.ENGLISH)) {
+            case "today" -> today;
+            case "tomorrow" -> today.plusDays(1);
+            case "mon", "monday" -> getNextWeekday(today, DayOfWeek.MONDAY);
+            case "tue", "tues", "tuesday" -> getNextWeekday(today, DayOfWeek.TUESDAY);
+            case "wed", "wednesday" -> getNextWeekday(today, DayOfWeek.WEDNESDAY);
+            case "thu", "thur", "thurs", "thursday" ->
+                getNextWeekday(today, DayOfWeek.THURSDAY);
+            case "fri", "friday" -> getNextWeekday(today, DayOfWeek.FRIDAY);
+            case "sat", "saturday" -> getNextWeekday(today, DayOfWeek.SATURDAY);
+            case "sun", "sunday" -> getNextWeekday(today, DayOfWeek.SUNDAY);
+            default -> throw createDateTimeParseException(completeInput);
+        };
+    }
+
+    /**
+     * Returns the first occurrence of a weekday strictly after the supplied date.
+     *
+     * @param today Date from which to search.
+     * @param dayOfWeek Weekday to find.
+     * @return Next matching date.
+     */
+    private static LocalDate getNextWeekday(LocalDate today, DayOfWeek dayOfWeek) {
+        return today.with(TemporalAdjusters.next(dayOfWeek));
+    }
+
+    /**
+     * Creates the common parsing exception used for unsupported natural dates.
+     *
+     * @param input Invalid input.
+     * @return Date-time parsing exception for the input.
+     */
+    private static DateTimeParseException createDateTimeParseException(String input) {
+        return new DateTimeParseException("Unsupported date and time format", input, 0);
     }
 }

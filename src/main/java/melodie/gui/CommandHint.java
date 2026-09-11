@@ -7,6 +7,7 @@ import java.util.StringJoiner;
  * Determines which command fields have not yet been entered.
  */
 final class CommandHint {
+    private static final String DATE_FORMATS = "d/M/yyyy|today|tomorrow|weekday";
     private static final String DESCRIPTION_FIELD = "<description>";
     private static final String TASK_NUMBER_FIELD = "<task number>";
     private static final String KEYWORD_FIELD = "<keyword>";
@@ -93,7 +94,7 @@ final class CommandHint {
     }
 
     private static String getDateTimeField(String fieldName) {
-        return "<" + fieldName + " date d/M/yyyy HHmm>";
+        return "<" + fieldName + " date " + DATE_FORMATS + " HHmm>";
     }
 
     /**
