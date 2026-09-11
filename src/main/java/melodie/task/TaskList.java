@@ -25,6 +25,7 @@ public class TaskList {
      * @param tasks Tasks with which to initialise the task list.
      */
     public TaskList(List<Task> tasks) {
+        assert tasks != null : "Initial task collection must not be null";
         this.tasks = new ArrayList<>(tasks);
     }
 
@@ -34,6 +35,7 @@ public class TaskList {
      * @param task Task to add.
      */
     public void add(Task task) {
+        assert task != null : "Task list must not contain null tasks";
         this.tasks.add(task);
     }
 
@@ -44,6 +46,7 @@ public class TaskList {
      * @return Removed task.
      */
     public Task delete(int index) {
+        assert this.isValidIndex(index) : "Task index must be validated before deletion";
         return this.tasks.remove(index);
     }
 
@@ -54,6 +57,7 @@ public class TaskList {
      * @return Task that was marked as completed.
      */
     public Task mark(int index) {
+        assert this.isValidIndex(index) : "Task index must be validated before marking";
         Task task = this.tasks.get(index);
         task.mark();
         return task;
@@ -66,12 +70,14 @@ public class TaskList {
      * @return Task that was marked as incomplete.
      */
     public Task unmark(int index) {
+        assert this.isValidIndex(index) : "Task index must be validated before unmarking";
         Task task = this.tasks.get(index);
         task.unmark();
         return task;
     }
 
     public Task get(int index) {
+        assert this.isValidIndex(index) : "Task index must be valid before retrieval";
         return this.tasks.get(index);
     }
 

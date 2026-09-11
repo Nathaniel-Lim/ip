@@ -14,6 +14,8 @@ public class ParsedCommand {
      * @param arguments Arguments supplied with the command.
      */
     public ParsedCommand(Command command, String arguments) {
+        assert command != null : "Parsed command type must not be null";
+        assert arguments != null : "Parsed command arguments must not be null";
         this.command = command;
         this.arguments = arguments;
     }
