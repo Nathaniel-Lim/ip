@@ -27,6 +27,10 @@ public class Parser {
             "Please enter a valid date and time :(\n"
                     + "    Formats: " + DATE_TIME_FORMATS + "\n"
                     + "    Examples: 2/12/2019 1800, tomorrow 0900, Mon 1400";
+    private static final String UPDATE_FORMAT_ERROR_MESSAGE =
+            "Please enter a valid update command :(\n"
+                    + "    Format: update <task number> "
+                    + "</description|/by|/from|/to> <new value>";
     private static final DateTimeFormatter INPUT_DATE_TIME_FORMATTER =
             DateTimeFormatter.ofPattern("d/M/uuuu HHmm")
                     .withResolverStyle(ResolverStyle.STRICT);
@@ -121,6 +125,59 @@ public class Parser {
         }
         return keyword;
     }
+
+    /**
+     * Parses the task number, field, and replacement value of an update command.
+     *
+     * @param arguments Arguments supplied with the update command.
+     * @return Parsed update data.
+     * @throws MelodieException If any required update argument is missing or invalid.
+     */
+    public ParsedUpdate parseUpdate(String arguments) throws MelodieException {
+        String[] indexAndDetails = arguments.trim().split("\\s+", 2);
+        if (indexAndDetails.length != 2) {
+            throw new MelodieException(UPDATE_FORMAT_ERROR_MESSAGE);
+        }
+
+        int taskIndex = this.parseTaskIndex(indexAndDetails[0]);
+        String[] fieldAndValue = indexAndDetails[1].trim().split("\\s+", 2);
+        if (fieldAndValue.length != 2 || fieldAndValue[1].isBlank()) {
+            throw new MelodieException(UPDATE_FORMAT_ERROR_MESSAGE);
+        }
+
+        try {
+            ParsedUpdate.Field field = ParsedUpdate.Field.from(fieldAndValue[0]);
+            return new ParsedUpdate(taskIndex, field, fieldAndValue[1].trim());
+        } catch (IllegalArgumentException e) {
+            throw new MelodieException(UPDATE_FORMAT_ERROR_MESSAGE);
+        }
+    }
+
+    /**
+     * Creates an updated copy of a task while preserving its unmodified fields.
+     *
+     * @param task Existing task.
+     * @param update Parsed update data.
+     * @return Updated task with the same completion status as the existing task.
+     * @throws MelodieException If the selected field is invalid for the task or its value is invalid.
+     */
+    public Task parseUpdatedTask(Task task, ParsedUpdate update) throws MelodieException {
+        assert task != null : "Task to update must not be null";
+        assert update != null : "Parsed update must not be null";
+
+        try {
+            Task updatedTask = switch (update.getField()) {
+                case DESCRIPTION -> this.updateDescription(task, update.getValue());
+                case DUE_DATE_TIME -> this.updateDeadlineDateTime(task, update.getValue());
+                case START_DATE_TIME -> this.updateEventStartDateTime(task, update.getValue());
+                case END_DATE_TIME -> this.updateEventEndDateTime(task, update.getValue());
+            };
+            return preserveCompletionStatus(task, updatedTask);
+        } catch (DateTimeParseException e) {
+            throw new MelodieException(DATE_TIME_ERROR_MESSAGE);
+        }
+    }
+
     /**
      * Creates a todo task from its command arguments.
      *
@@ -193,10 +250,132 @@ public class Parser {
         String endDateTimeString = toParts[1].trim();
         LocalDateTime startDateTime = this.parseDateTime(startDateTimeString);
         LocalDateTime endDateTime = this.parseDateTime(endDateTimeString);
+        return createEvent(description, startDateTime, endDateTime);
+    }
+
+    /**
+     * Creates a copy of a task with a replacement description.
+     *
+     * @param task Existing task.
+     * @param description Replacement description.
+     * @return Updated task of the same type.
+     */
+    private Task updateDescription(Task task, String description) {
+        if (task instanceof Deadline deadline) {
+            return new Deadline(description, deadline.getDueDateTime());
+        }
+        if (task instanceof Event event) {
+            return new Event(
+                    description,
+                    event.getStartDateTime(),
+                    event.getEndDateTime());
+        }
+        if (task instanceof Todo) {
+            return new Todo(description);
+        }
+        return new Task(description);
+    }
+
+    /**
+     * Creates a deadline with a replacement due date and time.
+     *
+     * @param task Existing task, which must be a deadline.
+     * @param dateTimeText Replacement date and time.
+     * @return Updated deadline.
+     * @throws MelodieException If the task is not a deadline.
+     */
+    private Task updateDeadlineDateTime(Task task, String dateTimeText)
+            throws MelodieException {
+        if (!(task instanceof Deadline deadline)) {
+            throw createInvalidUpdateFieldException(ParsedUpdate.Field.DUE_DATE_TIME);
+        }
+        return new Deadline(
+                deadline.getDescription(),
+                this.parseDateTime(dateTimeText));
+    }
+
+    /**
+     * Creates an event with a replacement start date and time.
+     *
+     * @param task Existing task, which must be an event.
+     * @param dateTimeText Replacement start date and time.
+     * @return Updated event.
+     * @throws MelodieException If the task is not an event or the resulting range is invalid.
+     */
+    private Task updateEventStartDateTime(Task task, String dateTimeText)
+            throws MelodieException {
+        if (!(task instanceof Event event)) {
+            throw createInvalidUpdateFieldException(ParsedUpdate.Field.START_DATE_TIME);
+        }
+        return createEvent(
+                event.getDescription(),
+                this.parseDateTime(dateTimeText),
+                event.getEndDateTime());
+    }
+
+    /**
+     * Creates an event with a replacement end date and time.
+     *
+     * @param task Existing task, which must be an event.
+     * @param dateTimeText Replacement end date and time.
+     * @return Updated event.
+     * @throws MelodieException If the task is not an event or the resulting range is invalid.
+     */
+    private Task updateEventEndDateTime(Task task, String dateTimeText)
+            throws MelodieException {
+        if (!(task instanceof Event event)) {
+            throw createInvalidUpdateFieldException(ParsedUpdate.Field.END_DATE_TIME);
+        }
+        return createEvent(
+                event.getDescription(),
+                event.getStartDateTime(),
+                this.parseDateTime(dateTimeText));
+    }
+
+    /**
+     * Creates an event after validating its date range.
+     *
+     * @param description Event description.
+     * @param startDateTime Event start date and time.
+     * @param endDateTime Event end date and time.
+     * @return Event containing the supplied details.
+     * @throws MelodieException If the event ends before it starts.
+     */
+    private static Event createEvent(
+            String description,
+            LocalDateTime startDateTime,
+            LocalDateTime endDateTime) throws MelodieException {
         if (endDateTime.isBefore(startDateTime)) {
             throw new MelodieException("The event cannot end before it starts :(");
         }
         return new Event(description, startDateTime, endDateTime);
+    }
+
+    /**
+     * Creates an error for a field that does not belong to the selected task type.
+     *
+     * @param field Inapplicable update field.
+     * @return User-facing update error.
+     */
+    private static MelodieException createInvalidUpdateFieldException(
+            ParsedUpdate.Field field) {
+        return new MelodieException(
+                "The " + field.getCommandToken()
+                        + " field cannot be updated for this task type :(");
+    }
+
+    /**
+     * Copies the completion status from the original task to its updated copy.
+     *
+     * @param originalTask Existing task.
+     * @param updatedTask Updated copy of the task.
+     * @return Updated task with the original completion status.
+     */
+    private static Task preserveCompletionStatus(Task originalTask, Task updatedTask) {
+        if (originalTask.isCompleted()) {
+            updatedTask.mark();
+        }
+        return updatedTask;
     }
 
     /**

@@ -11,6 +11,8 @@ final class CommandHint {
     private static final String DESCRIPTION_FIELD = "<description>";
     private static final String TASK_NUMBER_FIELD = "<task number>";
     private static final String KEYWORD_FIELD = "<keyword>";
+    private static final String UPDATE_FIELD = "</description|/by|/from|/to>";
+    private static final String UPDATE_VALUE_FIELD = "<new value>";
 
     private CommandHint() {
     }
@@ -37,6 +39,7 @@ final class CommandHint {
             case "event" -> getEventHint(arguments);
             case "mark", "unmark", "delete" -> arguments.isBlank() ? TASK_NUMBER_FIELD : "";
             case "find" -> arguments.isBlank() ? KEYWORD_FIELD : "";
+            case "update" -> getUpdateHint(arguments);
             default -> "";
         };
     }
@@ -95,6 +98,20 @@ final class CommandHint {
 
     private static String getDateTimeField(String fieldName) {
         return "<" + fieldName + " date " + DATE_FORMATS + " HHmm>";
+    }
+
+    private static String getUpdateHint(String arguments) {
+        if (arguments.isBlank()) {
+            return joinNonEmptyFields(TASK_NUMBER_FIELD, UPDATE_FIELD, UPDATE_VALUE_FIELD);
+        }
+
+        String[] indexAndDetails = arguments.trim().split("\\s+", 2);
+        if (indexAndDetails.length == 1) {
+            return joinNonEmptyFields(UPDATE_FIELD, UPDATE_VALUE_FIELD);
+        }
+
+        String[] fieldAndValue = indexAndDetails[1].trim().split("\\s+", 2);
+        return fieldAndValue.length == 1 ? UPDATE_VALUE_FIELD : "";
     }
 
     /**

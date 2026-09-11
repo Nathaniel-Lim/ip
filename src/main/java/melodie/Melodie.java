@@ -6,6 +6,7 @@ import java.util.List;
 
 import melodie.command.Command;
 import melodie.command.ParsedCommand;
+import melodie.command.ParsedUpdate;
 import melodie.command.Parser;
 import melodie.storage.Storage;
 import melodie.task.Task;
@@ -130,6 +131,8 @@ public class Melodie {
                 return this.unmarkTask(parsedCommand.getArguments());
             case DELETE:
                 return this.deleteTask(parsedCommand.getArguments());
+            case UPDATE:
+                return this.updateTask(parsedCommand.getArguments());
             case TODO, DEADLINE, EVENT:
                 return this.addTask(parsedCommand);
             case LIST:
@@ -161,6 +164,17 @@ public class Melodie {
                 + this.getTaskCountMessage();
     }
 
+    private String updateTask(String arguments) throws MelodieException, IOException {
+        ParsedUpdate update = this.parser.parseUpdate(arguments);
+        int taskIndex = update.getTaskIndex();
+        this.validateTaskIndex(taskIndex);
+
+        Task updatedTask = this.parser.parseUpdatedTask(this.tasks.get(taskIndex), update);
+        this.tasks.update(taskIndex, updatedTask);
+        this.storage.write(this.tasks);
+        return "Task has been updated successfully ♪\n" + updatedTask;
+    }
+
     private String addTask(ParsedCommand parsedCommand) throws MelodieException, IOException {
         Task task = this.parser.parseTask(parsedCommand);
         this.tasks.add(task);
@@ -177,10 +191,14 @@ public class Melodie {
 
     private int getValidTaskIndex(String arguments) throws MelodieException {
         int taskIndex = this.parser.parseTaskIndex(arguments);
+        this.validateTaskIndex(taskIndex);
+        return taskIndex;
+    }
+
+    private void validateTaskIndex(int taskIndex) throws MelodieException {
         if (!this.tasks.isValidIndex(taskIndex)) {
             throw new MelodieException("Please enter a valid task number :(");
         }
-        return taskIndex;
     }
 
     private String getTaskCountMessage() {

@@ -44,3 +44,27 @@ event workshop /from Sat 0900 /to Sat 1200
 ```
 
 An event's end date and time cannot be earlier than its start date and time.
+
+## Updating tasks
+
+Use `update TASK_NUMBER FIELD NEW_VALUE` to change one detail without deleting
+and recreating the task. Obtain the task number using `list`.
+
+| Task type | Supported fields |
+| --- | --- |
+| Todo | `/description` |
+| Deadline | `/description`, `/by` |
+| Event | `/description`, `/from`, `/to` |
+
+Examples:
+
+```text
+update 1 /description submit final report
+update 2 /by tomorrow 2359
+update 3 /from Mon 1400
+update 3 /to Mon 1600
+```
+
+Each command updates one field. All other details and the task's completion
+status remain unchanged. The `/by`, `/from`, and `/to` fields accept all the
+date and time formats described above.

@@ -38,6 +38,14 @@ public class Event extends Task {
         this(description, LocalDateTime.parse(startDateTime), LocalDateTime.parse(endDateTime));
     }
 
+    public LocalDateTime getStartDateTime() {
+        return this.startDateTime;
+    }
+
+    public LocalDateTime getEndDateTime() {
+        return this.endDateTime;
+    }
+
     @Override
     public String toStorageString() {
         return "E | " + super.toStorageString()
