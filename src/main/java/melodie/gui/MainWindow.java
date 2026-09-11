@@ -77,6 +77,7 @@ public class MainWindow extends AnchorPane {
      */
     @FXML
     private void handleUserInput() {
+        assert this.melodie != null : "Melodie must be set before handling user input";
         String input = this.userInput.getText().trim();
         if (input.isEmpty()) {
             return;
