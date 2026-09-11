@@ -124,46 +124,63 @@ public class Melodie {
      */
     private String executeCommand(ParsedCommand parsedCommand) throws MelodieException, IOException {
         switch (parsedCommand.getCommand()) {
-            case MARK, UNMARK, DELETE:
-                int taskIndex = this.parser.parseTaskIndex(parsedCommand.getArguments());
-                if (!this.tasks.isValidIndex(taskIndex)) {
-                    throw new MelodieException("Please enter a valid task number :(");
-                }
-
-                if (parsedCommand.getCommand() == Command.MARK) {
-                    Task markedTask = this.tasks.mark(taskIndex);
-                    this.storage.write(this.tasks);
-                    return "Good job! Task has been marked as done~\n" + markedTask;
-                } else if (parsedCommand.getCommand() == Command.UNMARK) {
-                    Task unmarkedTask = this.tasks.unmark(taskIndex);
-                    this.storage.write(this.tasks);
-                    return "Task has been marked as incomplete, good luck ♫\n" + unmarkedTask;
-                } else {
-                    Task deletedTask = this.tasks.delete(taskIndex);
-                    this.storage.write(this.tasks);
-                    return "Task has been removed ♪ goodbye task~\n"
-                            + deletedTask + "\n"
-                            + this.getTaskCountMessage();
-                }
-
+            case MARK:
+                return this.markTask(parsedCommand.getArguments());
+            case UNMARK:
+                return this.unmarkTask(parsedCommand.getArguments());
+            case DELETE:
+                return this.deleteTask(parsedCommand.getArguments());
             case TODO, DEADLINE, EVENT:
-                Task task = this.parser.parseTask(parsedCommand);
-                this.tasks.add(task);
-                this.storage.write(this.tasks);
-                return "Task has been added successfully ♪\n"
-                        + task + "\n"
-                        + this.getTaskCountMessage();
-
+                return this.addTask(parsedCommand);
             case LIST:
                 return this.getTaskListMessage();
-
             case FIND:
-                String keyword = this.parser.parseFindKeyword(parsedCommand.getArguments());
-                return this.getMatchingTasksMessage(this.tasks.find(keyword));
-
+                return this.findTasks(parsedCommand.getArguments());
             default:
                 throw new MelodieException("Sorry~ I don't recognise that command :(");
         }
+    }
+
+    private String markTask(String arguments) throws MelodieException, IOException {
+        Task markedTask = this.tasks.mark(this.getValidTaskIndex(arguments));
+        this.storage.write(this.tasks);
+        return "Good job! Task has been marked as done~\n" + markedTask;
+    }
+
+    private String unmarkTask(String arguments) throws MelodieException, IOException {
+        Task unmarkedTask = this.tasks.unmark(this.getValidTaskIndex(arguments));
+        this.storage.write(this.tasks);
+        return "Task has been marked as incomplete, good luck ♫\n" + unmarkedTask;
+    }
+
+    private String deleteTask(String arguments) throws MelodieException, IOException {
+        Task deletedTask = this.tasks.delete(this.getValidTaskIndex(arguments));
+        this.storage.write(this.tasks);
+        return "Task has been removed ♪ goodbye task~\n"
+                + deletedTask + "\n"
+                + this.getTaskCountMessage();
+    }
+
+    private String addTask(ParsedCommand parsedCommand) throws MelodieException, IOException {
+        Task task = this.parser.parseTask(parsedCommand);
+        this.tasks.add(task);
+        this.storage.write(this.tasks);
+        return "Task has been added successfully ♪\n"
+                + task + "\n"
+                + this.getTaskCountMessage();
+    }
+
+    private String findTasks(String arguments) throws MelodieException {
+        String keyword = this.parser.parseFindKeyword(arguments);
+        return this.getMatchingTasksMessage(this.tasks.find(keyword));
+    }
+
+    private int getValidTaskIndex(String arguments) throws MelodieException {
+        int taskIndex = this.parser.parseTaskIndex(arguments);
+        if (!this.tasks.isValidIndex(taskIndex)) {
+            throw new MelodieException("Please enter a valid task number :(");
+        }
+        return taskIndex;
     }
 
     private String getTaskCountMessage() {
