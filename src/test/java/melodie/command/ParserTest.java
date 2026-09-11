@@ -5,6 +5,10 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneOffset;
+
 import org.junit.jupiter.api.Test;
 
 import melodie.MelodieException;
@@ -14,6 +18,14 @@ import melodie.task.Task;
 import melodie.task.Todo;
 
 public class ParserTest {
+    private static final String DATE_TIME_ERROR_MESSAGE =
+            "Please enter a valid date and time :(\n"
+                    + "    Formats: d/M/yyyy HHmm, today HHmm, tomorrow HHmm, "
+                    + "or <weekday> HHmm\n"
+                    + "    Examples: 2/12/2019 1800, tomorrow 0900, Mon 1400";
+    private static final Clock WEDNESDAY_CLOCK =
+            Clock.fixed(Instant.parse("2026-09-09T12:00:00Z"), ZoneOffset.UTC);
+
     @Test
     public void parseTask_validTodo_returnsTodo() throws MelodieException {
         // Arrange
@@ -59,6 +71,42 @@ public class ParserTest {
     }
 
     @Test
+    public void parseTask_todayAndTomorrow_returnsResolvedEvent() throws MelodieException {
+        Parser parser = new Parser(WEDNESDAY_CLOCK);
+        ParsedCommand parsedCommand =
+                parser.parse("event deploy release /from today 2300 /to tomorrow 0100");
+
+        Task actualTask = parser.parseTask(parsedCommand);
+
+        assertInstanceOf(Event.class, actualTask);
+        assertEquals("[E][ ] deploy release (from: Sep 09 2026, 11:00 PM "
+                + "to: Sep 10 2026, 1:00 AM)", actualTask.toString());
+    }
+
+    @Test
+    public void parseTask_abbreviatedWeekday_returnsNextOccurrence() throws MelodieException {
+        Parser parser = new Parser(WEDNESDAY_CLOCK);
+        ParsedCommand parsedCommand = parser.parse("deadline submit report /by Mon 0900");
+
+        Task actualTask = parser.parseTask(parsedCommand);
+
+        assertInstanceOf(Deadline.class, actualTask);
+        assertEquals("[D][ ] submit report (by: Sep 14 2026, 9:00 AM)", actualTask.toString());
+    }
+
+    @Test
+    public void parseTask_weekdayMatchingToday_returnsFollowingWeek() throws MelodieException {
+        Clock mondayClock = Clock.fixed(
+                Instant.parse("2026-09-14T12:00:00Z"), ZoneOffset.UTC);
+        Parser parser = new Parser(mondayClock);
+        ParsedCommand parsedCommand = parser.parse("deadline submit report /by mOnDaY 0900");
+
+        Task actualTask = parser.parseTask(parsedCommand);
+
+        assertEquals("[D][ ] submit report (by: Sep 21 2026, 9:00 AM)", actualTask.toString());
+    }
+
+    @Test
     public void parse_mixedCaseCommand_returnsMatchingCommand() throws MelodieException {
         Parser parser = new Parser();
 
@@ -77,8 +125,29 @@ public class ParserTest {
         MelodieException exception =
                 assertThrows(MelodieException.class, () -> parser.parseTask(parsedCommand));
         // The lambda defers execution so assertThrows can capture the exception.
-        assertEquals("Please enter the date and time in d/M/yyyy HHmm format :(\n"
-                + "    Example: 2/12/2019 1800", exception.getMessage());
+        assertEquals(DATE_TIME_ERROR_MESSAGE, exception.getMessage());
+    }
+
+    @Test
+    public void parseTask_unknownNaturalDate_throwsMelodieException() {
+        Parser parser = new Parser(WEDNESDAY_CLOCK);
+        ParsedCommand parsedCommand = new ParsedCommand(
+                Command.DEADLINE, "submit report /by someday 1800");
+
+        MelodieException exception =
+                assertThrows(MelodieException.class, () -> parser.parseTask(parsedCommand));
+        assertEquals(DATE_TIME_ERROR_MESSAGE, exception.getMessage());
+    }
+
+    @Test
+    public void parseTask_invalidNaturalTime_throwsMelodieException() {
+        Parser parser = new Parser(WEDNESDAY_CLOCK);
+        ParsedCommand parsedCommand = new ParsedCommand(
+                Command.DEADLINE, "submit report /by tomorrow 2500");
+
+        MelodieException exception =
+                assertThrows(MelodieException.class, () -> parser.parseTask(parsedCommand));
+        assertEquals(DATE_TIME_ERROR_MESSAGE, exception.getMessage());
     }
 
     @Test

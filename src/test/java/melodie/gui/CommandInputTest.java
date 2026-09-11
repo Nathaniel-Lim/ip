@@ -38,26 +38,29 @@ public class CommandInputTest {
 
     @Test
     public void commandHint_deadlineFields_showsOnlyMissingFields() {
-        assertEquals("<description> /by <due date d/M/yyyy HHmm>",
+        assertEquals("<description> /by <due date d/M/yyyy|today|tomorrow|weekday HHmm>",
                 CommandHint.getMissingFields("deadline"));
-        assertEquals("/by <due date d/M/yyyy HHmm>",
+        assertEquals("/by <due date d/M/yyyy|today|tomorrow|weekday HHmm>",
                 CommandHint.getMissingFields("deadline return book"));
-        assertEquals("<due date d/M/yyyy HHmm>",
+        assertEquals("<due date d/M/yyyy|today|tomorrow|weekday HHmm>",
                 CommandHint.getMissingFields("deadline return book /by"));
         assertEquals("<due time HHmm>",
                 CommandHint.getMissingFields("deadline return book /by 2/12/2019"));
+        assertEquals("<due time HHmm>",
+                CommandHint.getMissingFields("deadline return book /by tomorrow"));
         assertEquals("",
                 CommandHint.getMissingFields("deadline return book /by 2/12/2019 1800"));
     }
 
     @Test
     public void commandHint_eventFields_showsOnlyMissingFields() {
-        assertEquals("<description> /from <start date d/M/yyyy HHmm> "
-                        + "/to <end date d/M/yyyy HHmm>",
+        assertEquals("<description> /from <start date d/M/yyyy|today|tomorrow|weekday HHmm> "
+                        + "/to <end date d/M/yyyy|today|tomorrow|weekday HHmm>",
                 CommandHint.getMissingFields("event"));
-        assertEquals("/from <start date d/M/yyyy HHmm> /to <end date d/M/yyyy HHmm>",
+        assertEquals("/from <start date d/M/yyyy|today|tomorrow|weekday HHmm> "
+                        + "/to <end date d/M/yyyy|today|tomorrow|weekday HHmm>",
                 CommandHint.getMissingFields("event meeting"));
-        assertEquals("/to <end date d/M/yyyy HHmm>",
+        assertEquals("/to <end date d/M/yyyy|today|tomorrow|weekday HHmm>",
                 CommandHint.getMissingFields("event meeting /from 2/12/2019 1400"));
         assertEquals("<end time HHmm>",
                 CommandHint.getMissingFields("event meeting /from 2/12/2019 1400 /to 2/12/2019"));

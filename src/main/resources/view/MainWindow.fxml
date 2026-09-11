@@ -35,7 +35,7 @@
                     <children>
                         <TextField fx:id="userInput" maxWidth="1.7976931348623157E308"
                                    onAction="#handleUserInput"
-                                   promptText="e.g. deadline return book /by 2/12/2019 1800"
+                                   promptText="e.g. deadline return book /by tomorrow 1800"
                                    styleClass="command-input" />
                         <Label fx:id="commandHint" minHeight="14.0"
                                styleClass="command-hint" />
