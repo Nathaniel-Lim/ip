@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
 
 <fx:root alignment="TOP_RIGHT" maxWidth="1.7976931348623157E308" spacing="8.0"
@@ -11,7 +12,9 @@
     <children>
         <Label fx:id="dialog" minHeight="-Infinity"
                styleClass="message-bubble" text="Message" wrapText="true" />
-        <Label fx:id="speakerIcon" styleClass="speaker-icon" text="♫" />
+        <ImageView fx:id="displayPicture" fitHeight="42.0" fitWidth="42.0"
+                   pickOnBounds="true" preserveRatio="true" smooth="true"
+                   styleClass="avatar" />
     </children>
     <padding>
         <Insets bottom="4.0" left="14.0" right="14.0" top="4.0" />

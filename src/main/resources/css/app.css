@@ -1,10 +1,14 @@
 .app-root {
-    -fx-background-color: linear-gradient(to bottom right, #faf5ff, #fffaf0);
+    -fx-background-color: #faf5ff;
+    -fx-background-image: url("../images/background.jpeg");
+    -fx-background-position: 45% center;
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: cover;
     -fx-font-family: "Avenir Next", "Segoe UI", sans-serif;
 }
 
 .app-header {
-    -fx-background-color: #3b1d5a;
+    -fx-background-color: rgba(59, 29, 90, 0.94);
     -fx-padding: 10px 16px;
 }
 
@@ -94,7 +98,7 @@
 }
 
 .user-dialog {
-    -fx-padding: 3px 14px 3px 58px;
+    -fx-padding: 3px 14px 3px 44px;
 }
 
 .user-bubble {
@@ -113,17 +117,8 @@
     -fx-text-fill: #1e293b;
 }
 
-.speaker-icon {
-    -fx-alignment: center;
-    -fx-background-color: #f6d68a;
-    -fx-background-radius: 18px;
-    -fx-font-size: 17px;
-    -fx-font-weight: bold;
-    -fx-min-height: 36px;
-    -fx-min-width: 36px;
-    -fx-pref-height: 36px;
-    -fx-pref-width: 36px;
-    -fx-text-fill: #3b1d5a;
+.avatar {
+    -fx-effect: dropshadow(gaussian, rgba(30, 41, 59, 0.28), 5, 0.15, 0, 1);
 }
 
 .error-bubble {
