@@ -52,7 +52,10 @@ public class DialogBox extends HBox {
      */
     public static DialogBox getUserDialog(String text, Image image) {
         DialogBox dialogBox = new DialogBox(text, image);
+        dialogBox.getStyleClass().add("user-dialog");
         dialogBox.dialog.getStyleClass().add("user-bubble");
+        dialogBox.displayPicture.setManaged(false);
+        dialogBox.displayPicture.setVisible(false);
         return dialogBox;
     }
 
@@ -66,7 +69,23 @@ public class DialogBox extends HBox {
     public static DialogBox getMelodieDialog(String text, Image image) {
         DialogBox dialogBox = new DialogBox(text, image);
         dialogBox.flip();
+        dialogBox.getStyleClass().add("melodie-dialog");
         dialogBox.dialog.getStyleClass().add("melodie-bubble");
+        return dialogBox;
+    }
+
+    /**
+     * Creates a visually prominent Melodie error response.
+     *
+     * @param text Error message.
+     * @param image Melodie avatar.
+     * @return Error dialog box.
+     */
+    public static DialogBox getErrorDialog(String text, Image image) {
+        DialogBox dialogBox = new DialogBox(text, image);
+        dialogBox.flip();
+        dialogBox.getStyleClass().add("melodie-dialog");
+        dialogBox.dialog.getStyleClass().add("error-bubble");
         return dialogBox;
     }
 
