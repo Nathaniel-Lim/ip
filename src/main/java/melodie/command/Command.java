@@ -29,7 +29,8 @@ public enum Command {
             return Command.valueOf(input.toUpperCase());
         } catch (IllegalArgumentException e) {
             throw new MelodieException(
-                    "Sorry~ I don't recognise that command :(");
+                    "That command isn't in my score yet. Try todo, deadline, event, "
+                            + "list, mark, unmark, find, update, delete, or bye.");
         }
     }
 

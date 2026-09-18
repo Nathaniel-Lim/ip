@@ -1,6 +1,5 @@
 package melodie.gui;
 
-import java.util.Objects;
 import java.util.Optional;
 
 import javafx.animation.PauseTransition;
@@ -10,7 +9,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
@@ -38,8 +36,6 @@ public class MainWindow extends AnchorPane {
     @FXML
     private Label commandHint;
 
-    private final Image userImage = this.loadImage("/images/DaUser.jpeg");
-    private final Image melodieImage = this.loadImage("/images/DaMelodie.jpeg");
     private final CommandHistory commandHistory = new CommandHistory();
 
     private Melodie melodie;
@@ -69,7 +65,7 @@ public class MainWindow extends AnchorPane {
     public void setMelodie(Melodie melodie) {
         this.melodie = melodie;
         this.dialogContainer.getChildren().add(
-                DialogBox.getMelodieDialog(melodie.getGreeting(), this.melodieImage));
+                DialogBox.getMelodieDialog(melodie.getGreeting()));
     }
 
     /**
@@ -86,10 +82,10 @@ public class MainWindow extends AnchorPane {
         this.commandHistory.record(input);
         String response = this.melodie.getResponse(input);
         DialogBox responseDialog = this.melodie.wasLastResponseError()
-                ? DialogBox.getErrorDialog(response, this.melodieImage)
-                : DialogBox.getMelodieDialog(response, this.melodieImage);
+                ? DialogBox.getErrorDialog(response)
+                : DialogBox.getMelodieDialog(response);
         this.dialogContainer.getChildren().addAll(
-                DialogBox.getUserDialog(input, this.userImage),
+                DialogBox.getUserDialog(input),
                 responseDialog);
         this.userInput.clear();
         this.userInput.requestFocus();
@@ -127,10 +123,5 @@ public class MainWindow extends AnchorPane {
         this.userInput.positionCaret(this.userInput.getLength());
         this.isRestoringHistory = false;
         event.consume();
-    }
-
-    private Image loadImage(String path) {
-        return new Image(Objects.requireNonNull(
-                MainWindow.class.getResourceAsStream(path), "Missing image resource: " + path));
     }
 }

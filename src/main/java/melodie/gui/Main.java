@@ -24,7 +24,7 @@ public class Main extends Application {
             Scene scene = new Scene(mainWindow);
 
             fxmlLoader.<MainWindow>getController().setMelodie(this.melodie);
-            stage.setTitle("Melodie");
+            stage.setTitle(Melodie.NAME + " — Task Conductor");
             stage.setMinWidth(420);
             stage.setMinHeight(520);
             stage.setScene(scene);
