@@ -27,6 +27,7 @@ public class Melodie {
     private TaskList tasks;
     private boolean hasLoadingError;
     private boolean isExitRequested;
+    private boolean wasLastResponseError;
 
     /**
      * Creates a Melodie chatbot with its user interface, storage, parser, and task list.
@@ -79,6 +80,7 @@ public class Melodie {
      */
     public String getResponse(String input) {
         this.isExitRequested = false;
+        this.wasLastResponseError = false;
         try {
             ParsedCommand parsedCommand = this.parser.parse(input);
             if (parsedCommand.getCommand() == Command.BYE) {
@@ -87,8 +89,10 @@ public class Melodie {
             }
             return this.executeCommand(parsedCommand);
         } catch (MelodieException e) {
+            this.wasLastResponseError = true;
             return e.getMessage();
         } catch (IOException e) {
+            this.wasLastResponseError = true;
             return SAVING_ERROR_MESSAGE;
         }
     }
@@ -100,6 +104,15 @@ public class Melodie {
      */
     public boolean isExitRequested() {
         return this.isExitRequested;
+    }
+
+    /**
+     * Reports whether the most recently processed command produced an error response.
+     *
+     * @return {@code true} when the latest response describes a command or storage error.
+     */
+    public boolean wasLastResponseError() {
+        return this.wasLastResponseError;
     }
 
     /**

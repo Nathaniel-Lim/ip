@@ -85,9 +85,12 @@ public class MainWindow extends AnchorPane {
 
         this.commandHistory.record(input);
         String response = this.melodie.getResponse(input);
+        DialogBox responseDialog = this.melodie.wasLastResponseError()
+                ? DialogBox.getErrorDialog(response, this.melodieImage)
+                : DialogBox.getMelodieDialog(response, this.melodieImage);
         this.dialogContainer.getChildren().addAll(
                 DialogBox.getUserDialog(input, this.userImage),
-                DialogBox.getMelodieDialog(response, this.melodieImage));
+                responseDialog);
         this.userInput.clear();
         this.userInput.requestFocus();
 

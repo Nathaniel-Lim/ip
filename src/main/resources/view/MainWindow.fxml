@@ -14,18 +14,36 @@
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="melodie.gui.MainWindow">
     <children>
+        <HBox alignment="CENTER_LEFT" prefHeight="62.0" spacing="10.0"
+              styleClass="app-header"
+              AnchorPane.leftAnchor="0.0"
+              AnchorPane.rightAnchor="0.0"
+              AnchorPane.topAnchor="0.0">
+            <children>
+                <Label styleClass="app-mark" text="M" />
+                <VBox spacing="1.0">
+                    <children>
+                        <Label styleClass="app-title" text="MELODIE" />
+                        <Label styleClass="app-subtitle" text="Your tasks at a glance" />
+                    </children>
+                </VBox>
+            </children>
+        </HBox>
+
         <ScrollPane fx:id="scrollPane" fitToWidth="true"
                     hbarPolicy="NEVER" vbarPolicy="AS_NEEDED"
-                    AnchorPane.bottomAnchor="66.0"
+                    styleClass="conversation-scroll"
+                    AnchorPane.bottomAnchor="78.0"
                     AnchorPane.leftAnchor="0.0"
                     AnchorPane.rightAnchor="0.0"
-                    AnchorPane.topAnchor="0.0">
+                    AnchorPane.topAnchor="62.0">
             <content>
-                <VBox fx:id="dialogContainer" fillWidth="true" spacing="4.0" />
+                <VBox fx:id="dialogContainer" fillWidth="true" spacing="5.0"
+                      styleClass="dialog-container" />
             </content>
         </ScrollPane>
 
-        <HBox alignment="CENTER" prefHeight="66.0" spacing="8.0" styleClass="input-bar"
+        <HBox alignment="CENTER" prefHeight="78.0" spacing="10.0" styleClass="input-bar"
               AnchorPane.bottomAnchor="0.0"
               AnchorPane.leftAnchor="0.0"
               AnchorPane.rightAnchor="0.0">
@@ -41,8 +59,8 @@
                                styleClass="command-hint" />
                     </children>
                 </VBox>
-                <Button fx:id="sendButton" minWidth="72.0"
-                        onAction="#handleUserInput" text="Send ♪" />
+                <Button fx:id="sendButton" minWidth="76.0"
+                        onAction="#handleUserInput" styleClass="send-button" text="Send" />
             </children>
         </HBox>
     </children>
