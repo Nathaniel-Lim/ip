@@ -17,9 +17,19 @@ import melodie.ui.Ui;
  * Coordinates the components of the Melodie chatbot.
  */
 public class Melodie {
-    private static final String FAREWELL_MESSAGE = "Farewell, come play with me again :D";
-    private static final String LOADING_ERROR_MESSAGE = "Sorry~ I couldn't load your saved tasks :(";
-    private static final String SAVING_ERROR_MESSAGE = "Sorry! I couldn't save your tasks :(";
+    /** Product and chatbot name shown in every user interface. */
+    public static final String NAME = "Melodie";
+
+    /** Opening message that introduces Melodie's musical-conductor personality. */
+    public static final String GREETING_MESSAGE = "Hello! I'm Melodie, your task conductor ♪\n"
+            + "Ready to bring today's tasks into harmony?";
+
+    private static final String FAREWELL_MESSAGE =
+            "The set is complete. Until our next session ♪";
+    private static final String LOADING_ERROR_MESSAGE =
+            "I couldn't load your saved tasks, so we're starting with an empty score.";
+    private static final String SAVING_ERROR_MESSAGE =
+            "I couldn't save that change. Please check the data folder and try again.";
 
     private final Ui ui;
     private final Storage storage;
@@ -65,11 +75,10 @@ public class Melodie {
      * @return Greeting and, when applicable, a saved-data loading warning.
      */
     public String getGreeting() {
-        String greeting = "Hello ♪ I'm Melodie~\nWhat master piece shall we play?";
         if (this.hasLoadingError) {
-            return greeting + "\n\n" + LOADING_ERROR_MESSAGE;
+            return GREETING_MESSAGE + "\n\n" + LOADING_ERROR_MESSAGE;
         }
-        return greeting;
+        return GREETING_MESSAGE;
     }
 
     /**
@@ -153,26 +162,26 @@ public class Melodie {
             case FIND:
                 return this.findTasks(parsedCommand.getArguments());
             default:
-                throw new MelodieException("Sorry~ I don't recognise that command :(");
+                throw new MelodieException("That command isn't in my score yet.");
         }
     }
 
     private String markTask(String arguments) throws MelodieException, IOException {
         Task markedTask = this.tasks.mark(this.getValidTaskIndex(arguments));
         this.storage.write(this.tasks);
-        return "Good job! Task has been marked as done~\n" + markedTask;
+        return "Bravo! That task is complete ♪\n" + markedTask;
     }
 
     private String unmarkTask(String arguments) throws MelodieException, IOException {
         Task unmarkedTask = this.tasks.unmark(this.getValidTaskIndex(arguments));
         this.storage.write(this.tasks);
-        return "Task has been marked as incomplete, good luck ♫\n" + unmarkedTask;
+        return "Back on the set list — we'll rehearse it again.\n" + unmarkedTask;
     }
 
     private String deleteTask(String arguments) throws MelodieException, IOException {
         Task deletedTask = this.tasks.delete(this.getValidTaskIndex(arguments));
         this.storage.write(this.tasks);
-        return "Task has been removed ♪ goodbye task~\n"
+        return "That task has left the set list ♪\n"
                 + deletedTask + "\n"
                 + this.getTaskCountMessage();
     }
@@ -185,14 +194,14 @@ public class Melodie {
         Task updatedTask = this.parser.parseUpdatedTask(this.tasks.get(taskIndex), update);
         this.tasks.update(taskIndex, updatedTask);
         this.storage.write(this.tasks);
-        return "Task has been updated successfully ♪\n" + updatedTask;
+        return "That task is back in tune ♪\n" + updatedTask;
     }
 
     private String addTask(ParsedCommand parsedCommand) throws MelodieException, IOException {
         Task task = this.parser.parseTask(parsedCommand);
         this.tasks.add(task);
         this.storage.write(this.tasks);
-        return "Task has been added successfully ♪\n"
+        return "Added to today's set list ♪\n"
                 + task + "\n"
                 + this.getTaskCountMessage();
     }
@@ -210,20 +219,23 @@ public class Melodie {
 
     private void validateTaskIndex(int taskIndex) throws MelodieException {
         if (!this.tasks.isValidIndex(taskIndex)) {
-            throw new MelodieException("Please enter a valid task number :(");
+            throw new MelodieException(
+                    "That task number isn't on the set list. Please try another number.");
         }
     }
 
     private String getTaskCountMessage() {
-        return "There are " + this.tasks.size() + " task(s) awaiting your attention~";
+        int taskCount = this.tasks.size();
+        String taskWord = taskCount == 1 ? "task" : "tasks";
+        return "Your set list now holds " + taskCount + " " + taskWord + ".";
     }
 
     private String getTaskListMessage() {
         if (this.tasks.isEmpty()) {
-            return "Your list is currently empty; let's get started shall we? ♪";
+            return "Your set list is quiet. Add a task when you're ready ♪";
         }
 
-        StringBuilder response = new StringBuilder("Here are the tasks in your list ♪");
+        StringBuilder response = new StringBuilder("Here is today's set list ♪");
         for (int i = 0; i < this.tasks.size(); i++) {
             response.append("\n").append(i + 1).append(". ").append(this.tasks.get(i));
         }
@@ -232,10 +244,10 @@ public class Melodie {
 
     private String getMatchingTasksMessage(List<Task> matchingTasks) {
         if (matchingTasks.isEmpty()) {
-            return "I couldn't find any matching tasks :(";
+            return "No tasks in the score match that search.";
         }
 
-        StringBuilder response = new StringBuilder("Here are the matching tasks in your list ♪");
+        StringBuilder response = new StringBuilder("These tasks match your search ♪");
         for (int i = 0; i < matchingTasks.size(); i++) {
             response.append("\n").append(i + 1).append(". ").append(matchingTasks.get(i));
         }

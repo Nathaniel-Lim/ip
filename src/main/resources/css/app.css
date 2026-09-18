@@ -1,25 +1,26 @@
 .app-root {
-    -fx-background-color: linear-gradient(to bottom right, #eef2ff, #f8fafc);
+    -fx-background-color: linear-gradient(to bottom right, #faf5ff, #fffaf0);
     -fx-font-family: "Avenir Next", "Segoe UI", sans-serif;
 }
 
 .app-header {
-    -fx-background-color: #172554;
+    -fx-background-color: #3b1d5a;
     -fx-padding: 10px 16px;
 }
 
 .app-mark {
-    -fx-background-color: #c7d2fe;
+    -fx-background-color: #f6d68a;
     -fx-background-radius: 18px;
     -fx-font-size: 20px;
     -fx-font-weight: bold;
     -fx-min-height: 36px;
     -fx-min-width: 36px;
     -fx-alignment: center;
-    -fx-text-fill: #312e81;
+    -fx-text-fill: #3b1d5a;
 }
 
 .app-title {
+    -fx-font-family: "Serif";
     -fx-font-size: 16px;
     -fx-font-weight: bold;
     -fx-text-fill: white;
@@ -27,7 +28,7 @@
 
 .app-subtitle {
     -fx-font-size: 11px;
-    -fx-text-fill: #c7d2fe;
+    -fx-text-fill: #eadcf8;
 }
 
 .scroll-pane,
@@ -60,7 +61,7 @@
 }
 
 .command-input:focused {
-    -fx-border-color: #4f46e5;
+    -fx-border-color: #7e3f98;
     -fx-background-color: white;
 }
 
@@ -70,7 +71,7 @@
 }
 
 .send-button {
-    -fx-background-color: #4f46e5;
+    -fx-background-color: #7e3f98;
     -fx-background-radius: 8px;
     -fx-font-weight: bold;
     -fx-padding: 9px 14px;
@@ -78,11 +79,11 @@
 }
 
 .send-button:hover {
-    -fx-background-color: #4338ca;
+    -fx-background-color: #6b3482;
 }
 
 .send-button:pressed {
-    -fx-background-color: #3730a3;
+    -fx-background-color: #572969;
 }
 
 .message-bubble {
@@ -97,7 +98,7 @@
 }
 
 .user-bubble {
-    -fx-background-color: #4f46e5;
+    -fx-background-color: #7e3f98;
     -fx-text-fill: white;
 }
 
@@ -106,10 +107,23 @@
 }
 
 .melodie-bubble {
-    -fx-background-color: white;
-    -fx-border-color: #dbe4f0;
+    -fx-background-color: #fffdf8;
+    -fx-border-color: #ead7a5;
     -fx-border-radius: 12px;
     -fx-text-fill: #1e293b;
+}
+
+.speaker-icon {
+    -fx-alignment: center;
+    -fx-background-color: #f6d68a;
+    -fx-background-radius: 18px;
+    -fx-font-size: 17px;
+    -fx-font-weight: bold;
+    -fx-min-height: 36px;
+    -fx-min-width: 36px;
+    -fx-pref-height: 36px;
+    -fx-pref-width: 36px;
+    -fx-text-fill: #3b1d5a;
 }
 
 .error-bubble {

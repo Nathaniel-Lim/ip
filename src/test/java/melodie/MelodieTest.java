@@ -7,6 +7,16 @@ import org.junit.jupiter.api.Test;
 
 public class MelodieTest {
     @Test
+    public void personality_coreMessages_useMusicalConductorTheme() {
+        Melodie melodie = new Melodie();
+
+        assertTrue(melodie.getGreeting().contains(Melodie.NAME));
+        assertTrue(melodie.getGreeting().contains("task conductor"));
+        assertTrue(melodie.getResponse("bye").contains("set is complete"));
+        assertTrue(melodie.getResponse("unknown-command").contains("score"));
+    }
+
+    @Test
     public void responseStatus_errorThenSuccess_tracksLatestResponse() {
         Melodie melodie = new Melodie();
 

@@ -10,12 +10,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 
 /**
- * Represents one chat row containing a message and its speaker's avatar.
+ * Represents one chat row containing a message and its speaker's icon.
  */
 public class DialogBox extends HBox {
     private static final double MAX_DIALOG_WIDTH_RATIO = 0.72;
@@ -24,9 +22,9 @@ public class DialogBox extends HBox {
     private Label dialog;
 
     @FXML
-    private ImageView displayPicture;
+    private Label speakerIcon;
 
-    private DialogBox(String text, Image image) {
+    private DialogBox(String text) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(
                     DialogBox.class.getResource("/view/DialogBox.fxml"));
@@ -38,7 +36,6 @@ public class DialogBox extends HBox {
         }
 
         this.dialog.setText(text);
-        this.displayPicture.setImage(image);
         this.dialog.maxWidthProperty().bind(
                 this.widthProperty().multiply(MAX_DIALOG_WIDTH_RATIO));
     }
@@ -47,15 +44,14 @@ public class DialogBox extends HBox {
      * Creates a right-aligned user message.
      *
      * @param text Message text.
-     * @param image User avatar.
      * @return User dialog box.
      */
-    public static DialogBox getUserDialog(String text, Image image) {
-        DialogBox dialogBox = new DialogBox(text, image);
+    public static DialogBox getUserDialog(String text) {
+        DialogBox dialogBox = new DialogBox(text);
         dialogBox.getStyleClass().add("user-dialog");
         dialogBox.dialog.getStyleClass().add("user-bubble");
-        dialogBox.displayPicture.setManaged(false);
-        dialogBox.displayPicture.setVisible(false);
+        dialogBox.speakerIcon.setManaged(false);
+        dialogBox.speakerIcon.setVisible(false);
         return dialogBox;
     }
 
@@ -63,11 +59,10 @@ public class DialogBox extends HBox {
      * Creates a left-aligned Melodie response.
      *
      * @param text Response text.
-     * @param image Melodie avatar.
      * @return Melodie dialog box.
      */
-    public static DialogBox getMelodieDialog(String text, Image image) {
-        DialogBox dialogBox = new DialogBox(text, image);
+    public static DialogBox getMelodieDialog(String text) {
+        DialogBox dialogBox = new DialogBox(text);
         dialogBox.flip();
         dialogBox.getStyleClass().add("melodie-dialog");
         dialogBox.dialog.getStyleClass().add("melodie-bubble");
@@ -78,11 +73,10 @@ public class DialogBox extends HBox {
      * Creates a visually prominent Melodie error response.
      *
      * @param text Error message.
-     * @param image Melodie avatar.
      * @return Error dialog box.
      */
-    public static DialogBox getErrorDialog(String text, Image image) {
-        DialogBox dialogBox = new DialogBox(text, image);
+    public static DialogBox getErrorDialog(String text) {
+        DialogBox dialogBox = new DialogBox(text);
         dialogBox.flip();
         dialogBox.getStyleClass().add("melodie-dialog");
         dialogBox.dialog.getStyleClass().add("error-bubble");

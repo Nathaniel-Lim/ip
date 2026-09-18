@@ -2,11 +2,12 @@ package melodie.ui;
 
 import java.util.Scanner;
 
+import melodie.Melodie;
+
 /**
  * Handles console input and output for Melodie.
  */
 public class Ui {
-    private static final String CHATBOT_NAME = "Melodie";
     private static final String BANNER =
             " __  __      _           _ _\n"
             + "|  \\/  | ___| | ___   __| (_) ___\n"
@@ -39,8 +40,7 @@ public class Ui {
     public void showIntro() {
         System.out.println("____________________________________________________________\n"
                 + BANNER + "\n"
-                + "Hello ♪ I'm " + CHATBOT_NAME + "~\n"
-                + "What master piece shall we play?\n"
+                + Melodie.GREETING_MESSAGE + "\n"
                 + "____________________________________________________________\n");
     }
 
