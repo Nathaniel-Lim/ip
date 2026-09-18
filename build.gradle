@@ -74,6 +74,7 @@ shadowJar {
 run {
     enableAssertions = true
     standardInput = System.in
+    jvmArgs '--enable-native-access=javafx.graphics'
 }
 
 checkstyle {
