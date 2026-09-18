@@ -4,7 +4,8 @@
     -fx-background-position: 45% center;
     -fx-background-repeat: no-repeat;
     -fx-background-size: cover;
-    -fx-font-family: "Avenir Next", "Segoe UI", sans-serif;
+    -fx-font-family: "Serif";
+    -fx-font-weight: normal;
 }
 
 .app-header {
@@ -25,13 +26,16 @@
 
 .app-title {
     -fx-font-family: "Serif";
-    -fx-font-size: 16px;
-    -fx-font-weight: bold;
+    -fx-font-size: 17px;
+    -fx-font-style: italic;
+    -fx-font-weight: normal;
     -fx-text-fill: white;
 }
 
 .app-subtitle {
     -fx-font-size: 11px;
+    -fx-font-style: italic;
+    -fx-font-weight: normal;
     -fx-text-fill: #eadcf8;
 }
 
@@ -61,6 +65,7 @@
     -fx-border-color: #cbd5e1;
     -fx-border-radius: 8px;
     -fx-padding: 8px 10px;
+    -fx-font-weight: normal;
     -fx-prompt-text-fill: #64748b;
 }
 
@@ -71,13 +76,16 @@
 
 .command-hint {
     -fx-font-size: 11px;
+    -fx-font-style: italic;
+    -fx-font-weight: normal;
     -fx-text-fill: #64748b;
 }
 
 .send-button {
     -fx-background-color: #7e3f98;
     -fx-background-radius: 8px;
-    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-font-weight: normal;
     -fx-padding: 9px 14px;
     -fx-text-fill: white;
 }
@@ -93,6 +101,7 @@
 .message-bubble {
     -fx-background-radius: 12px;
     -fx-font-size: 14px;
+    -fx-font-weight: normal;
     -fx-line-spacing: 2px;
     -fx-padding: 9px 12px;
 }
