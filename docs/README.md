@@ -3,6 +3,8 @@
 Melodie is a task chatbot that manages todos, deadlines, and events through
 typed commands.
 
+![Melodie graphical user interface](Ui.png)
+
 ## Getting started
 
 1. Ensure that Java 25 is installed.
