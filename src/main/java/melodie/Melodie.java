@@ -22,10 +22,10 @@ public class Melodie {
 
     /** Opening message that introduces Melodie's musical-conductor personality. */
     public static final String GREETING_MESSAGE = "Hello! I'm Melodie, your task conductor ♪\n"
-            + "Ready to bring today's tasks into harmony?";
+            + "What masterpiece shall we play?";
 
     private static final String FAREWELL_MESSAGE =
-            "The set is complete. Until our next session ♪";
+            "Rhapsodically accomplished! Come play with me again ♪";
     private static final String LOADING_ERROR_MESSAGE =
             "I couldn't load your saved tasks, so we're starting with an empty score.";
     private static final String SAVING_ERROR_MESSAGE =

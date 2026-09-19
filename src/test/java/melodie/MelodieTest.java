@@ -12,7 +12,7 @@ public class MelodieTest {
 
         assertTrue(melodie.getGreeting().contains(Melodie.NAME));
         assertTrue(melodie.getGreeting().contains("task conductor"));
-        assertTrue(melodie.getResponse("bye").contains("set is complete"));
+        assertTrue(melodie.getResponse("bye").contains("Rhapsodically accomplished"));
         assertTrue(melodie.getResponse("unknown-command").contains("score"));
     }
 
