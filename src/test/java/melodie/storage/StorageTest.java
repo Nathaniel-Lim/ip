@@ -3,9 +3,11 @@ package melodie.storage;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -87,5 +89,45 @@ public class StorageTest {
         assertFalse(actualTasks.get(0).getDescription().isBlank());
         assertEquals("T | 1 | place a control ward at Baron pit",
                 actualTasks.get(0).toStorageString());
+    }
+
+    @Test
+    public void writeAndRead_descriptionsContainingSeparator_preservesDescriptions()
+            throws IOException {
+        // Arrange
+        Path filePath = this.tempDirectory.resolve("separators").resolve("Melodie.txt");
+        Storage storage = new Storage(filePath);
+        TaskList expectedTasks = new TaskList();
+        expectedTasks.add(new Todo("compare A | B"));
+        expectedTasks.add(new Deadline(
+                "submit draft | final copy",
+                LocalDateTime.of(2027, 1, 10, 18, 0)));
+        expectedTasks.add(new Event(
+                "rehearse verse | chorus",
+                LocalDateTime.of(2027, 1, 11, 14, 0),
+                LocalDateTime.of(2027, 1, 11, 16, 0)));
+
+        // Act
+        storage.write(expectedTasks);
+        ArrayList<Task> actualTasks = storage.read();
+
+        // Assert
+        assertEquals(expectedTasks.size(), actualTasks.size());
+        for (int i = 0; i < actualTasks.size(); i++) {
+            assertEquals(expectedTasks.get(i).getDescription(), actualTasks.get(i).getDescription());
+            assertEquals(expectedTasks.get(i).toStorageString(), actualTasks.get(i).toStorageString());
+        }
+    }
+
+    @Test
+    public void read_malformedKnownTask_throwsIoException() throws IOException {
+        // Arrange
+        Path filePath = this.tempDirectory.resolve("malformed").resolve("Melodie.txt");
+        Files.createDirectories(filePath.getParent());
+        Files.writeString(filePath, "D | 0 | missing date");
+        Storage storage = new Storage(filePath);
+
+        // Act and assert
+        assertThrows(IOException.class, storage::read);
     }
 }
