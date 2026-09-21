@@ -69,5 +69,10 @@ Run the automated tests and code-quality checks with:
 - Cat user-avatar image: `Kitty` WhatsApp sticker pack by Zuckerschnute.
 - Dog Melodie-avatar image: `guat` WhatsApp sticker pack by Viko & Co.
 - Mount Fuji background: original photograph by Nathaniel Lim.
+- OpenAI ChatGPT and Codex were used by Nathaniel Lim throughout the project
+  to assist with brainstorming, implementation, debugging, refactoring,
+  testing, and documentation across multiple increments. All AI-generated
+  suggestions and content were reviewed, tested where applicable, and adapted
+  before inclusion.
 
 The third-party sticker artwork remains credited to its respective creators.
